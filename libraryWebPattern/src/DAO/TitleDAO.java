@@ -16,22 +16,26 @@ import java.util.ArrayList;
 
 /**
  *
- * @author Seanoh
+ * @author Sami
  */
 public class TitleDAO extends DAO implements TitleDAOInterface {
-
+/**
+ * 
+ * @param description
+ * @return 
+ */
     @Override
     public ArrayList<Title> getTitlesByDescription(String description) {
-        Connection con = null;
+        Connection conn = null;
         PreparedStatement ps = null;
         ResultSet rs = null;
         Title title = null;
         ArrayList<Title> titles = new ArrayList();
 
         try {
-            con = getConnection();
+            conn = getConnection();
             String query = "SELECT * FROM titles WHERE titleDescription LIKE ?";
-            ps = con.prepareStatement(query);
+            ps = conn.prepareStatement(query);
 
             ps.setString(1, "%" + description + "%");
             rs = ps.executeQuery();
@@ -58,8 +62,8 @@ public class TitleDAO extends DAO implements TitleDAOInterface {
                 if (ps != null) {
                     ps.close();
                 }
-                if (con != null) {
-                    closeConnection(con);
+                if (conn != null) {
+                    closeConnection(conn);
                 }
             } catch (SQLException e) {
                 System.out.println("Exception occured in the finally section in the getTitlesByDescription() method");
@@ -71,16 +75,16 @@ public class TitleDAO extends DAO implements TitleDAOInterface {
 
     @Override
     public ArrayList<Title> getTitlesByAuthor(String author) {
-        Connection con = null;
+        Connection conn = null;
         PreparedStatement ps = null;
         ResultSet rs = null;
         Title title = null;
         ArrayList<Title> titles = new ArrayList();
 
         try {
-            con = getConnection();
+            conn = getConnection();
             String query = "SELECT * FROM titles WHERE author = ?";
-            ps = con.prepareStatement(query);
+            ps = conn.prepareStatement(query);
 
             ps.setString(1, author);
             rs = ps.executeQuery();
@@ -107,8 +111,8 @@ public class TitleDAO extends DAO implements TitleDAOInterface {
                 if (ps != null) {
                     ps.close();
                 }
-                if (con != null) {
-                    closeConnection(con);
+                if (conn != null) {
+                    closeConnection(conn);
                 }
             } catch (SQLException e) {
                 System.out.println("Exception occured in the finally section in the getTitlesByAuthor() method");
@@ -120,16 +124,16 @@ public class TitleDAO extends DAO implements TitleDAOInterface {
 
     @Override
     public ArrayList<Title> getTitlesByName(String name) {
-        Connection con = null;
+        Connection conn = null;
         PreparedStatement ps = null;
         ResultSet rs = null;
         Title title = null;
         ArrayList<Title> titles = new ArrayList();
 
         try {
-            con = getConnection();
+            conn = getConnection();
             String query = "SELECT * FROM titles WHERE novelName = ?";
-            ps = con.prepareStatement(query);
+            ps = conn.prepareStatement(query);
 
             ps.setString(1, "%" + name + "%");
             rs = ps.executeQuery();
@@ -156,8 +160,8 @@ public class TitleDAO extends DAO implements TitleDAOInterface {
                 if (ps != null) {
                     ps.close();
                 }
-                if (con != null) {
-                    closeConnection(con);
+                if (conn != null) {
+                    closeConnection(conn);
                 }
             } catch (SQLException e) {
                 System.out.println("Exception occured in the finally section in the getTitlesByName() method");
@@ -169,25 +173,20 @@ public class TitleDAO extends DAO implements TitleDAOInterface {
 
     @Override
     public Title getTitleByID(int id) {
-        Connection con = null;
+        Connection conn = null;
         PreparedStatement ps = null;
         ResultSet rs = null;
         Title title = null;
         try {
-            con = getConnection();
+            conn = getConnection();
             String query = "SELECT * FROM titles WHERE novelName = ?";
-            ps = con.prepareStatement(query);
+            ps = conn.prepareStatement(query);
 
             ps.setInt(1, id);
             rs = ps.executeQuery();
 
-            while (rs.next()) {
-                title = new Title();
-                title.setNovelName(rs.getString("novelName"));
-                title.setAuthor(rs.getString("author"));
-                title.setStock(rs.getInt("stock"));
-                title.setOnLoan(rs.getInt("onLoan"));
-                title.setTitleDescription(rs.getString("titleDescription"));
+            if (rs.next()) {
+                title = new Title(rs.getInt("titleID"), rs.getString("novelName"), rs.getString("author"), rs.getInt("stock"), rs.getInt("onLoan"), rs.getString("titleDescription"));
             }
 
         } catch (SQLException e) {
@@ -201,8 +200,8 @@ public class TitleDAO extends DAO implements TitleDAOInterface {
                 if (ps != null) {
                     ps.close();
                 }
-                if (con != null) {
-                    closeConnection(con);
+                if (conn != null) {
+                    closeConnection(conn);
                 }
             } catch (SQLException e) {
                 System.out.println("Exception occured in the finally section in the getTitlesByName() method");
@@ -214,16 +213,16 @@ public class TitleDAO extends DAO implements TitleDAOInterface {
 
     @Override
     public boolean addTitle(Title title) {
-        Connection con = null;
+        Connection conn = null;
         PreparedStatement ps = null;
         int rs = 0;
         Title titleTemp = null;
         Boolean result = null;
 
         try {
-            con = getConnection();
+            conn = getConnection();
             String query = "INSERT INTO users VALUES(NULL,?,?,?,?,?)";
-            ps = con.prepareStatement(query);
+            ps = conn.prepareStatement(query);
             String novelName = title.getNovelName();
             String author = title.getAuthor();
             int stock = title.getStock();
@@ -261,8 +260,8 @@ public class TitleDAO extends DAO implements TitleDAOInterface {
                 if (ps != null) {
                     ps.close();
                 }
-                if (con != null) {
-                    closeConnection(con);
+                if (conn != null) {
+                    closeConnection(conn);
                 }
             } catch (SQLException e) {
                 System.out.println("Exception occured in the finally section in the addTitle() method");
