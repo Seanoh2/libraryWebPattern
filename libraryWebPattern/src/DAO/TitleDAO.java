@@ -288,7 +288,7 @@ public class TitleDAO extends DAO implements TitleDAOInterface {
 
         try {
             con = getConnection();
-            String query = "SELECT * FROM titles ";
+            String query = "SELECT * FROM titles";
             ps = con.prepareStatement(query);
             rs = ps.executeQuery();
 

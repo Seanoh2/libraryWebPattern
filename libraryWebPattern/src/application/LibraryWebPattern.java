@@ -26,6 +26,7 @@ public class LibraryWebPattern {
         User tempUser = new User();
         UserDAO userDAO = new UserDAO();
         TitleDAO titleDAO = new TitleDAO();
+        ArrayList<Title> allTitles;
         Scanner input = new Scanner(System.in);
         int choice = -1;
 
@@ -101,7 +102,7 @@ public class LibraryWebPattern {
                             
 
                 case 3:
-                    ArrayList<Title> allTitles = titleDAO.getAllTitles();
+                    allTitles = titleDAO.getAllTitles();
                     for (Title title : allTitles) {
                         System.out.print("Title Name: ");
                         System.out.println(title.getNovelName());
@@ -116,6 +117,29 @@ public class LibraryWebPattern {
                         System.out.println("");
                     }
                     break;
+                    
+                case 4:
+                    allTitles = titleDAO.getAllTitles();
+                    int titleChoice;
+                    Title titleDisplay;
+                    
+                    System.out.println("Please enter ID of title you would like to view.");
+                    for(Title title : allTitles) {
+                        System.out.print("Title ID: ");
+                        System.out.println(title.getTitleID());
+                        
+                        System.out.println("Title Name: "+title.getNovelName());
+                    }
+                    
+                    titleChoice = input.nextInt();
+                    titleDisplay = titleDAO.getTitleByID(titleChoice);
+                    
+                    System.out.println("Title Name: " + titleDisplay.getNovelName());
+                    System.out.println("Title Author: " + titleDisplay.getAuthor());
+                    System.out.println("Title Description: " + titleDisplay.getTitleDescription());
+                    System.out.println("Stock: " + titleDisplay.getStock());
+                    break;
+                    
             }
 
             if (choice == 0) {
