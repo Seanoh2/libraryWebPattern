@@ -5,6 +5,8 @@
  */
 package Dtos;
 
+import java.util.Objects;
+
 /**
  *
  * @author Sean
@@ -167,5 +169,40 @@ public class User {
     public String toString() {
         return "User{" + "email=" + email + ", password=" + password + ", firstName=" + firstName + ", lastName=" + lastName + ", country=" + country + ", addressLine1=" + addressLine1 + ", addressLine2=" + addressLine2 + ", isAdmin=" + isAdmin + '}';
     }
+
+    @Override
+    public int hashCode() {
+        int hash = 5;
+        hash = 79 * hash + this.userID;
+        hash = 79 * hash + Objects.hashCode(this.email);
+        hash = 79 * hash + Objects.hashCode(this.password);
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final User other = (User) obj;
+        if (this.userID != other.userID) {
+            return false;
+        }
+        if (!Objects.equals(this.email, other.email)) {
+            return false;
+        }
+        if (!Objects.equals(this.password, other.password)) {
+            return false;
+        }
+        return true;
+    }
+    
+    
     
 }

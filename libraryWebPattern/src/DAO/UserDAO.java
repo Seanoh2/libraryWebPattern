@@ -188,9 +188,11 @@ public class UserDAO extends DAO implements UserDAOInterface {
      * This method will take input from the console and create a user object.
      * The user must be an admin to use this method.
      *
+     * @param u
      * @param user
      * @return boolean indicating if the add was executed or not.
      */
+    @Override
     public boolean addUser(User u) {
         Connection conn = null;
         PreparedStatement ps = null;

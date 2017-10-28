@@ -20,7 +20,13 @@ import java.util.ArrayList;
  * @author Seanoh
  */
 public class TitleGenreDAO extends DAO implements TitleGenreDAOInterface {
-
+    
+    /**
+     * This will return a list of TitleGenre objects by the titleID.<p>
+     * TitleGenre objects store Title and Genre objects.
+     * @param titleID Used to find relevant genres.
+     * @return ArrayList of TitleGenre objects.
+     */
     @Override
     public ArrayList<TitleGenre> getGenreByTitleID(int titleID) {
         Connection con = null;

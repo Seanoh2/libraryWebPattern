@@ -5,6 +5,8 @@
  */
 package Dtos;
 
+import java.util.Objects;
+
 /**
  *
  * @author Sean
@@ -54,6 +56,35 @@ public class Genre {
 
     public void setGenre(String genre) {
         this.genre = genre;
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 3;
+        hash = 89 * hash + this.genreID;
+        hash = 89 * hash + Objects.hashCode(this.genre);
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final Genre other = (Genre) obj;
+        if (this.genreID != other.genreID) {
+            return false;
+        }
+        if (!Objects.equals(this.genre, other.genre)) {
+            return false;
+        }
+        return true;
     }
     
     

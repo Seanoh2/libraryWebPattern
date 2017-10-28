@@ -20,12 +20,10 @@ import java.util.ArrayList;
 public class GenreDAO extends DAO implements GenreDAOInterface {
 
     /**
-     *
-     * This will check the db for a Genre based on GenreID and return that Genre
-     *
-     * @param genreID This will be used to find a Genre with an id equal to
-     * genreID param
-     * @return Genre object from the db which matches the genreID of the param.
+     * This will return a Genre object by their ID.<p>
+     * Single Genre object.
+     * @param genreID This will be used to find what genre is needed.
+     * @return A Genre object from database.
      */
     @Override
     public Genre getGenreByID(int genreID) {

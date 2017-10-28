@@ -21,6 +21,14 @@ import java.util.ArrayList;
  */
 public class BorrowedDAO extends DAO implements BorrowedDAOInterface {
 
+    
+    /**
+     * This will return a borrowed ArrayList by their userID.<p>
+     * User must be logged in to do this.<p>
+     * Method will be rejected if they are not.
+     * @param userID This will be used to identify user.
+     * @return ArrayList of Borrowed
+     */
     @Override
     public ArrayList<Borrowed> getBorrowedByUserID(int userID) {
         Connection con = null;
@@ -72,6 +80,14 @@ public class BorrowedDAO extends DAO implements BorrowedDAOInterface {
         return borrowedList;
     }
 
+    /**
+     * This will return a borrowed ArrayList by their titleID<p>
+     * User must be logged in to do this.<p>
+     * Methods will be rejected if they are not.
+     * 
+     * @param titleID This will be used to identify what Title to find.
+     * @return ArrayList of Borrowed
+     */
     @Override
     public ArrayList<Borrowed> getBorrowedByTitleID(int titleID) {
         Connection con = null;
@@ -123,6 +139,15 @@ public class BorrowedDAO extends DAO implements BorrowedDAOInterface {
         return borrowedList;
     }
 
+    /**
+     * This will return a borrowed ArrayList by their titleID<p>
+     * Status 1 means it is returned.<p>
+     * Status 0 means it isn't returned.<p>
+     * User must be logged in to do this.<p>
+     * Method will be rejected if they are not.
+     * @param status This will be used to find which loans have finished.
+     * @return ArrayList of Borrowed
+     */
     @Override
     public ArrayList<Borrowed> getBorrowedByStatus(int status) {
         Connection con = null;
@@ -173,9 +198,16 @@ public class BorrowedDAO extends DAO implements BorrowedDAOInterface {
 
         return borrowedList;    
     }
-
+    /**
+     * This will add a borrowed object into the database.<p>
+     * Admin user is imported to check if they are a admin before adding borrowed object.<p>
+     * Method rejected if User object isn't admin.
+     * @param borrowed This will be used to add a new borrowed to database.
+     * @param Admin This will be used to ensure user is an admin.
+     * @return boolean response if it was successful or an issue happened.
+     */
     @Override
-    public boolean addBorrowed(Borrowed borrowed, User admin) {
+    public boolean addBorrowed(Borrowed borrowed, User Admin) {
         Connection con = null;
         PreparedStatement ps = null;
         int rs = 0;
