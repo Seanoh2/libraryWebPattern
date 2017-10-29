@@ -16,7 +16,7 @@ import java.util.ArrayList;
 
 /**
  *
- * @author Sami
+ * @author Sean
  */
 public class TitleDAO extends DAO implements TitleDAOInterface {
 /**
@@ -221,7 +221,7 @@ public class TitleDAO extends DAO implements TitleDAOInterface {
 
         try {
             conn = getConnection();
-            String query = "INSERT INTO users VALUES(NULL,?,?,?,?,?)";
+            String query = "INSERT INTO titles VALUES(NULL,?,?,?,?,?)";
             ps = conn.prepareStatement(query);
             String novelName = title.getNovelName();
             String author = title.getAuthor();
