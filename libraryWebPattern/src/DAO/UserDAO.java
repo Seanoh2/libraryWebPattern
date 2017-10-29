@@ -100,7 +100,7 @@ public class UserDAO extends DAO implements UserDAOInterface {
         try {
             conn = getConnection();
 
-            String query = "SELECT * FROM user WHERE firstName LIKE ? OR lastName LIKE ?";
+            String query = "SELECT * FROM users WHERE firstName LIKE ? OR lastName LIKE ?";
             ps = conn.prepareStatement(query);
             ps.setString(1, "%" + name + "%");
             ps.setString(2, "%" + name + "%");
@@ -156,7 +156,7 @@ public class UserDAO extends DAO implements UserDAOInterface {
         try {
             conn = getConnection();
 
-            String query = "SELECT * FROM user WHERE userID = ?";
+            String query = "SELECT * FROM users WHERE userID = ?";
             ps = conn.prepareStatement(query);
             ps.setInt(1, userID);
             rs = ps.executeQuery();
