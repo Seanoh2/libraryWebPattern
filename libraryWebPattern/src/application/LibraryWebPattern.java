@@ -141,6 +141,7 @@ public class LibraryWebPattern {
                     System.out.println("Stock: " + titleDisplay.getStock());
                     break;
                 case 9:
+                {
                     //Add Title
                     //public Title(String novelName, String author, int stock, int onLoan, String titleDescription)
                     String name = null;     //Name of novel
@@ -199,8 +200,7 @@ public class LibraryWebPattern {
                                 } 
                             }
                         }//End of error checking
-                        // invalid input1
-                        
+                        // invalid input
                         System.out.println("Invalid Details! Please enter details again..");
                     }//End of User Input
                     //Add title
@@ -208,9 +208,137 @@ public class LibraryWebPattern {
                     //Push title to database
                     titleDAO.addTitle(newTitle);
                     break;
+                }
                 case 10:
+                {
                     //Title Detail Modify
+                    //Fetch all titles, choose title to update
+                    allTitles = titleDAO.getAllTitles();
+                    Title title = new Title();
+                    ArrayList tidList = new ArrayList();
+                    int tid = 0; //title id
+                    String name = null; //novelName
+                    String author = null; //author
+                    int stock = 0; //stock
+                    int onLoan = 0; //onLoan
+                    String desc = null; //titleDescription
+                    for(Title t : allTitles) {
+                        System.out.println("-------------------------------------------------");
+                        System.out.print("Title ID: " + t.getTitleID());
+                        System.out.println("Title Name: "+t.getNovelName());
+                        //add ids for error checking
+                        tidList.add(t.getTitleID());
+                    }
+                    //error checking zone
+                    while(true){
+                        try{
+                            System.out.println("Please enter ID of title you would like to modify.");
+                            tid = Integer.parseInt(input.nextLine());
+                            boolean success = false;
+                            for(int i=0;i<tidList.size();i++){
+                                if(tid == (int)tidList.get(i)) {
+                                    //Success!
+                                    success = true;
+                                    break;
+                                }
+                            }
+                            //allow user to modify or keep same values
+                            if(success){
+                                //fetch the title
+                                title = titleDAO.getTitleByID(tid);
+                                System.out.println("Please Modify the values of the selected title\nOld Values will be put in brackets");
+                                System.out.println("Enter new value or \"none\" if there is no change required");
+                                System.out.println("Title Name("+title.getNovelName()+"):");
+                                name = input.nextLine();
+                                if(name.equals("none")){
+                                    name = title.getNovelName();
+                                }
+                                System.out.println("Title Author("+title.getAuthor()+"):");
+                                author = input.nextLine();
+                                if (author.equals("none")) {
+                                    author = title.getAuthor();
+                                }
+                                System.out.println("Title Description("+title.getTitleDescription()+"):");
+                                desc = input.nextLine();
+                                if(desc.equals("none")) {
+                                    desc = title.getTitleDescription();
+                                }
+                                System.out.println("Title Stock("+title.getStock()+"):");
+                                //Necessary for capturing integer input, nextInt() causes the scanner to skip the next input, nextLine() does not
+                                try {
+                                    // casting string as integer
+                                    String temp = input.nextLine();
+                                    if(!temp.equals("none")){
+                                        stock = Integer.parseInt(temp);
+                                    }
+                                    else {
+                                        stock = title.getStock();
+                                    }
+                                    
+                                } catch (NumberFormatException e) {
+                                    //capturing exception if not a number
+                                    e.printStackTrace();
+                                }
+                                System.out.println("Titles on loan("+title.getOnLoan()+"):");
+                                try {
+                                    // casting string as integer
+                                    String temp = input.nextLine();
+                                    if(!temp.equals("none")){
+                                        onLoan = Integer.parseInt(temp);
+                                    }
+                                    else {
+                                        onLoan = title.getOnLoan();
+                                    }
+                                    
+                                } catch (NumberFormatException e) {
+                                    //capturing exception if not a number
+                                    e.printStackTrace();
+                                }
+
+
+                                // Input Error Checking
+                                if(name != null && !name.equals("")) {
+                                    if(author != null && !author.equals("")) {
+                                        if(desc != null && !desc.equals("")) {
+                                            //Confirm with User that details are correct
+                                            boolean res = false;
+                                            while(!res) {
+                                                System.out.println("Are these details correct?[Y/N]");
+                                                String confirm = input.nextLine();
+                                                //if yes, break out of confirmation and add title
+                                                if(confirm.equals("y") || confirm.equals("Y")) {
+                                                    res = true;
+                                                }
+                                                // if no, break out and reenter details
+                                                else if(confirm.equals("N") || confirm.equals("n")) {
+                                                    System.out.println("Please enter details again..");
+                                                    break;
+                                                }
+                                                //if invalid confirmation, loop back and ask for confirmation again
+                                                else {
+                                                    System.out.println("Invalid Answer");
+                                                }
+                                            }
+                                            //only true if "confirm" == "Y", break out to add title
+                                            if(res){
+                                                break;
+                                            }
+                                        } 
+                                    }
+                                }//End of error checking
+                                // invalid input
+                                System.out.println("Invalid Details! Please enter details again..");
+                            }//End of User Input
+                        } catch (NumberFormatException e) {
+                                //capturing exception if not a number
+                                e.printStackTrace();
+                        }
+                    }
+                    //send new values to db
+                    Title updateTitle = new Title(name, author, stock, onLoan, desc);
+                    titleDAO.updateTitle(tid, updateTitle);
                     break;
+                }
                 case 11:
                     //Title Stock Modify
                     break;

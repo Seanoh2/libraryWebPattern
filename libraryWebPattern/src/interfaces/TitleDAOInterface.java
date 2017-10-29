@@ -62,6 +62,13 @@ public interface TitleDAOInterface {
     public boolean addTitle(Title title);
     
     /**
+     * This will update an existing title in the database.
+     * @param title used to be added to database.
+     * @return Confirmation if update was successful.
+     */
+    public boolean updateTitle(int id, Title title);
+    
+    /**
      * Used to return all titles in database.
      * Can be used to display or to find info from client.
      * @return ArrayList of all titles in db.

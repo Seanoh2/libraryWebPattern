@@ -179,7 +179,7 @@ public class TitleDAO extends DAO implements TitleDAOInterface {
         Title title = null;
         try {
             conn = getConnection();
-            String query = "SELECT * FROM titles WHERE novelName = ?";
+            String query = "SELECT * FROM titles WHERE titleID = ?";
             ps = conn.prepareStatement(query);
 
             ps.setInt(1, id);
@@ -323,5 +323,72 @@ public class TitleDAO extends DAO implements TitleDAOInterface {
 
         return titles;
 
+    }
+
+    @Override
+    public boolean updateTitle(int id, Title title) {
+        Connection conn = null;
+        PreparedStatement ps = null;
+        int rs = 0;
+        Title titleTemp = null;
+        Boolean result = null;
+
+        try {
+            conn = getConnection();
+            String query = "UPDATE titles SET novelName=?, author=?, stock=?, onLoan=?, titleDescription=? WHERE titleID=?";
+            ps = conn.prepareStatement(query);
+            String novelName = title.getNovelName();
+            String author = title.getAuthor();
+            int stock = title.getStock();
+            int onLoan = title.getOnLoan();
+            String titleDescription = title.getTitleDescription();
+
+            // Fill in the blanks, i.e. parameterize the query
+            ps.setString(1, novelName);
+            ps.setString(2, author);
+            ps.setInt(3, stock);
+            ps.setInt(4, onLoan);
+            ps.setString(5, titleDescription);
+            ps.setInt(6, id);
+
+            // Execute the query
+            rs = ps.executeUpdate();
+
+        } catch (MySQLIntegrityConstraintViolationException e) {
+            System.out.println("Constraint Exception occurred: " + e.getMessage());
+            // Set the rowsAffected to -1, this can be used as a flag for the display section
+            rs = -1;
+
+        } catch (SQLException se) {
+            System.out.println("SQL Exception occurred: " + se.getMessage());
+            se.printStackTrace();
+        } catch (Exception e) {
+            System.out.println("Exception occurred: " + e.getMessage());
+            e.printStackTrace();
+        } // Now that the program has completed its database access component, 
+        // close the open access points (resultset, preparedstatement, connection)
+        // Remember to close them in the OPPOSITE ORDER to how they were opened
+        // Opening order: Connection -> PreparedStatement -> ResultSet
+        // Closing order: ResultSet -> PreparedStatement -> Connection
+        finally {
+            try {
+                if (ps != null) {
+                    ps.close();
+                }
+                if (conn != null) {
+                    closeConnection(conn);
+                }
+            } catch (SQLException e) {
+                System.out.println("Exception occured in the finally section in the updateTitle() method");
+            }
+        }
+
+        if (rs > 0) {
+            result = true;
+        } else {
+            result = false;
+        }
+
+        return result;
     }
 }
