@@ -10,6 +10,7 @@ import DAO.UserDAO;
 import Dtos.Title;
 import Dtos.User;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 
 /**
@@ -139,7 +140,86 @@ public class LibraryWebPattern {
                     System.out.println("Title Description: " + titleDisplay.getTitleDescription());
                     System.out.println("Stock: " + titleDisplay.getStock());
                     break;
+                case 9:
+                    //Add Title
+                    //public Title(String novelName, String author, int stock, int onLoan, String titleDescription)
+                    String name = null;     //Name of novel
+                    String author = null;   //Name of Author
+                    int stock = 0;          //Stock count
+                    int onLoan = 0;         //number of stock on loan
+                    String desc = null;     //Description of Title
                     
+                    
+                    while(true) {
+                        System.out.println("Title Name:");
+                        name = input.nextLine();
+                        System.out.println("Title Author:");
+                        author = input.nextLine();
+                        System.out.println("Title Description:");
+                        desc = input.nextLine();
+                        System.out.println("Title Stock:");
+                        //Necessary for capturing integer input, nextInt() causes the scanner to skip the next input, nextLine() does not
+                        try {
+                            // casting string as integer
+                            stock = Integer.parseInt(input.nextLine());
+                        } catch (NumberFormatException e) {
+                            //capturing exception if not a number
+                            e.printStackTrace();
+                        }
+                        onLoan = 0; //default to 0 because a loan cant be taken out on new stock 
+                        
+                        
+                        // Input Error Checking
+                        if(name != null && !name.equals("")) {
+                            if(author != null && !author.equals("")) {
+                                if(desc != null && !desc.equals("")) {
+                                    //Confirm with User that details are correct
+                                    boolean res = false;
+                                    while(!res) {
+                                        System.out.println("Are these details correct?[Y/N]");
+                                        String confirm = input.nextLine();
+                                        //if yes, break out of confirmation and add title
+                                        if(confirm.equals("y") || confirm.equals("Y")) {
+                                            res = true;
+                                        }
+                                        // if no, break out and reenter details
+                                        else if(confirm.equals("N") || confirm.equals("n")) {
+                                            System.out.println("Please enter details again..");
+                                            break;
+                                        }
+                                        //if invalid confirmation, loop back and ask for confirmation again
+                                        else {
+                                            System.out.println("Invalid Answer");
+                                        }
+                                    }
+                                    //only true if "confirm" == "Y", break out to add title
+                                    if(res){
+                                        break;
+                                    }
+                                } 
+                            }
+                        }//End of error checking
+                        // invalid input1
+                        
+                        System.out.println("Invalid Details! Please enter details again..");
+                    }//End of User Input
+                    //Add title
+                    Title newTitle = new Title(name, author, stock, onLoan, desc);
+                    //Push title to database
+                    titleDAO.addTitle(newTitle);
+                    break;
+                case 10:
+                    //Title Detail Modify
+                    break;
+                case 11:
+                    //Title Stock Modify
+                    break;
+                case 12:
+                    //Title Remove
+                    break;
+                case 13:
+                    //User Remove - NOTE: CANNOT REMOVE ADMIN
+                    break;
             }
 
             if (choice == 0) {
@@ -188,5 +268,5 @@ public class LibraryWebPattern {
         }
         sc.nextLine();
         return choice;
-    }
+    }   
 }
