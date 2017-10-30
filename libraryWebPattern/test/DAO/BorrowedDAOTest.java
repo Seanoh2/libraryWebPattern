@@ -47,12 +47,11 @@ public class BorrowedDAOTest {
     @Test
     public void testGetBorrowedByUserID() {
         System.out.println("getBorrowedByUserID");
-        int userID = 4;
+        int userID = 9;
         BorrowedDAO instance = new BorrowedDAO();
         ArrayList<Borrowed> expResult = new ArrayList();
         
         Borrowed temp = new Borrowed();
-        expResult.add(temp);
         
         ArrayList<Borrowed> result = instance.getBorrowedByUserID(userID);
         assertEquals(expResult.size(), result.size());
@@ -85,6 +84,8 @@ public class BorrowedDAOTest {
         BorrowedDAO instance = new BorrowedDAO();
         ArrayList<Borrowed> expResult = new ArrayList();
         ArrayList<Borrowed> result = new ArrayList();
+        Borrowed temp = new Borrowed();
+        expResult.add(temp);
         result = instance.getBorrowedByStatus(status);
         assertEquals(expResult.size(), result.size());
     }

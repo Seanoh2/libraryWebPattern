@@ -86,12 +86,12 @@ public class TitleDAO extends DAO implements TitleDAOInterface {
 
         try {
             conn = getConnection();
-            String query = "INSERT INTO titles VALUES (NULL, ?, ?, ?, ?, ?, NULL)";
+            String query = "INSERT INTO titles VALUES (NULL, ?, ?, ?, ?, ?)";
             ps = conn.prepareStatement(query);
-            ps.setInt(1, t.getTitleID());
-            ps.setString(2, t.getNovelName());
-            ps.setString(3, t.getAuthor());
-            ps.setInt(4, t.getStock());
+            ps.setString(1, t.getNovelName());
+            ps.setString(2, t.getAuthor());
+            ps.setInt(3, t.getStock());
+            ps.setInt(4, t.getOnLoan());
             ps.setString(5, t.getTitleDescription());
             rs = ps.executeUpdate();
             if (rs > 0) {

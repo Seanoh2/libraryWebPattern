@@ -381,41 +381,72 @@ public class LibraryWebPattern {
                     break;
 
                 case 11:
-                    /**
-                     * To add a new Title you must be an admin An Id is asked
-                     * from the user to enter before adding title If id == 1 (1
-                     * = admin, 0 = user) Then the option to add the Title
-                     * Details is given Admin will Enter
-                     * Id/Name/Author/Stock/Des. Displays the Title if
-                     * Successfully added If title wasnt successfully added -
-                     * displays meaningful message.
-                     *
-                     *
-                     */
-                    if (user.getIsAdmin() == 1) {
-                        System.out.println("Enter Novel name ");
-                        title.setNovelName(input.next());
-
-                        System.out.println("Enter Author ");
-                        title.setAuthor(input.next());
-
-                        System.out.println("Enter Stock");
-                        title.setStock(input.nextInt());
-
-                        System.out.println("Enter description");
-                        title.setTitleDescription(input.next());
-
-                        boolean add = titleDAO.addTitle(title);
-                        if (add) {
-                            System.out.println("Title sucessfully added ");
-                            System.out.println(add);
-                        } else {
-                            System.out.println("Title could not be added ");
-
+                    //Add Title
+                    //public Title(String novelName, String author, int stock, int onLoan, String titleDescription)
+                    String name = null;     //Name of novel
+                    String author = null;   //Name of Author
+                    int stock = 0;          //Stock count
+                    int onLoan = 0;         //number of stock on loan
+                    String desc = null;     //Description of Title
+                    
+                    
+                    while(true) {
+                        System.out.println("Title Name:");
+                        name = input.nextLine();
+                        System.out.println("Title Author:");
+                        author = input.nextLine();
+                        System.out.println("Title Description:");
+                        desc = input.nextLine();
+                        System.out.println("Title Stock:");
+                        //Necessary for capturing integer input, nextInt() causes the scanner to skip the next input, nextLine() does not
+                        try {
+                            // casting string as integer
+                            stock = Integer.parseInt(input.nextLine());
+                        } catch (NumberFormatException e) {
+                            //capturing exception if not a number
+                            e.printStackTrace();
                         }
-                    } else {
-                        System.out.println("Not an admin");
-                    }
+                        onLoan = 0; //default to 0 because a loan cant be taken out on new stock 
+                        
+                        
+                        // Input Error Checking
+                        if(name != null && !name.equals("")) {
+                            if(author != null && !author.equals("")) {
+                                if(desc != null && !desc.equals("")) {
+                                    //Confirm with User that details are correct
+                                    boolean res = false;
+                                    while(!res) {
+                                        System.out.println("Are these details correct?[Y/N]");
+                                        String confirm = input.nextLine();
+                                        //if yes, break out of confirmation and add title
+                                        if(confirm.equals("y") || confirm.equals("Y")) {
+                                            res = true;
+                                        }
+                                        // if no, break out and reenter details
+                                        else if(confirm.equals("N") || confirm.equals("n")) {
+                                            System.out.println("Please enter details again..");
+                                            break;
+                                        }
+                                        //if invalid confirmation, loop back and ask for confirmation again
+                                        else {
+                                            System.out.println("Invalid Answer");
+                                        }
+                                    }
+                                    //only true if "confirm" == "Y", break out to add title
+                                    if(res){
+                                        break;
+                                    }
+                                } 
+                            }
+                        }//End of error checking
+                        // invalid input1
+                        
+                        System.out.println("Invalid Details! Please enter details again..");
+                    }//End of User Input
+                    //Add title
+                    Title newTitle = new Title(name, author, stock, onLoan, desc);
+                    //Push title to database
+                    titleDAO.addTitle(newTitle);
                     break;
 
                 case 12:
@@ -425,11 +456,11 @@ public class LibraryWebPattern {
                     title = new Title();
                     ArrayList tidList = new ArrayList();
                     int tid = 0; //title id
-                    String name = null; //novelName
-                    String author = null; //author
-                    int stock = 0; //stock
-                    int onLoan = 0; //onLoan
-                    String desc = null; //titleDescription
+                    name = null; //novelName
+                    author = null; //author
+                    stock = 0; //stock
+                    onLoan = 0; //onLoan
+                    desc = null; //titleDescription
                     for(Title t : allTitles) {
                         System.out.println("-------------------------------------------------");
                         System.out.print("Title ID: " + t.getTitleID());
