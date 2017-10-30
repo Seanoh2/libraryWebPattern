@@ -45,12 +45,15 @@ public class TitleGenreDAOTest {
     @Test
     public void testGetGenreByTitleID() {
         System.out.println("getGenreByTitleID");
-        int titleID = 0;
+        int titleID = 1;
         TitleGenreDAO instance = new TitleGenreDAO();
+        TitleGenre temp = new TitleGenre();
+
         ArrayList<TitleGenre> expResult = new ArrayList();
+        expResult.add(temp);
+        
         ArrayList<TitleGenre> result = instance.getGenreByTitleID(titleID);
-        assertEquals(expResult, result);
-        fail("The test case is a prototype.");
+        assertEquals(expResult.size(), result.size());
     }
     
 }

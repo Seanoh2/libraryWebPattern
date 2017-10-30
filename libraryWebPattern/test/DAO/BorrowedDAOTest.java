@@ -6,6 +6,8 @@
 package DAO;
 
 import Dtos.Borrowed;
+import Dtos.Title;
+import Dtos.User;
 import java.util.ArrayList;
 import org.junit.After;
 import org.junit.AfterClass;
@@ -45,11 +47,15 @@ public class BorrowedDAOTest {
     @Test
     public void testGetBorrowedByUserID() {
         System.out.println("getBorrowedByUserID");
-        int userID = 0;
+        int userID = 4;
         BorrowedDAO instance = new BorrowedDAO();
-        ArrayList<Borrowed> expResult = null;
+        ArrayList<Borrowed> expResult = new ArrayList();
+        
+        Borrowed temp = new Borrowed();
+        expResult.add(temp);
+        
         ArrayList<Borrowed> result = instance.getBorrowedByUserID(userID);
-        assertEquals(expResult, result);
+        assertEquals(expResult.size(), result.size());
     }
 
     /**
@@ -58,13 +64,15 @@ public class BorrowedDAOTest {
     @Test
     public void testGetBorrowedByTitleID() {
         System.out.println("getBorrowedByTitleID");
-        int titleID = 0;
+        int titleID = 4;
         BorrowedDAO instance = new BorrowedDAO();
-        ArrayList<Borrowed> expResult = null;
+        ArrayList<Borrowed> expResult = new ArrayList();
+   
+        Borrowed temp = new Borrowed();
+        expResult.add(temp);
+       
         ArrayList<Borrowed> result = instance.getBorrowedByTitleID(titleID);
-        assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
+        assertEquals(expResult.size(), result.size());
     }
 
     /**
@@ -73,13 +81,12 @@ public class BorrowedDAOTest {
     @Test
     public void testGetBorrowedByStatus() {
         System.out.println("getBorrowedByStatus");
-        int status = 0;
+        int status = 1;
         BorrowedDAO instance = new BorrowedDAO();
-        ArrayList<Borrowed> expResult = null;
-        ArrayList<Borrowed> result = instance.getBorrowedByStatus(status);
-        assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
+        ArrayList<Borrowed> expResult = new ArrayList();
+        ArrayList<Borrowed> result = new ArrayList();
+        result = instance.getBorrowedByStatus(status);
+        assertEquals(expResult.size(), result.size());
     }
 
     /**
@@ -90,11 +97,9 @@ public class BorrowedDAOTest {
         System.out.println("getStatusByUserID");
         int userID = 0;
         BorrowedDAO instance = new BorrowedDAO();
-        ArrayList<Borrowed> expResult = null;
+        ArrayList<Borrowed> expResult = new ArrayList();
         ArrayList<Borrowed> result = instance.getStatusByUserID(userID);
         assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
     }
 
     /**
@@ -103,14 +108,12 @@ public class BorrowedDAOTest {
     @Test
     public void testUpdateStatus() {
         System.out.println("updateStatus");
-        int borrowedID = 0;
-        int newStatus = 0;
+        int borrowedID = 1;
+        int newStatus = 1;
         BorrowedDAO instance = new BorrowedDAO();
-        boolean expResult = false;
+        boolean expResult = true;
         boolean result = instance.updateStatus(borrowedID, newStatus);
         assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
     }
 
     /**
@@ -119,13 +122,17 @@ public class BorrowedDAOTest {
     @Test
     public void testGetBorrowedByID() {
         System.out.println("getBorrowedByID");
-        int borrowedID = 0;
+        int borrowedID = 1;
         BorrowedDAO instance = new BorrowedDAO();
-        Borrowed expResult = null;
+        UserDAO userInstance = new UserDAO();
+        TitleDAO titleInstance = new TitleDAO();
+        
+        Title title = titleInstance.searchByID(1);
+        User user = userInstance.findUserByID(4);
+        
+        Borrowed expResult = new Borrowed(1,user,title,10,0);
         Borrowed result = instance.getBorrowedByID(borrowedID);
-        assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
+        assertEquals(expResult.getTitle(), result.getTitle());
     }
 
     /**
@@ -134,13 +141,17 @@ public class BorrowedDAOTest {
     @Test
     public void testAddBorrowed() {
         System.out.println("addBorrowed");
-        Borrowed borrowed = null;
         BorrowedDAO instance = new BorrowedDAO();
-        boolean expResult = false;
-        boolean result = instance.addBorrowed(borrowed);
+        UserDAO userInstance = new UserDAO();
+        TitleDAO titleInstance = new TitleDAO();
+    
+        Title title = titleInstance.searchByID(1);
+        User user = userInstance.findUserByID(4);
+        Borrowed temp = new Borrowed(user,title,10,0);
+        
+        boolean expResult = true;
+        boolean result = instance.addBorrowed(temp);
         assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
     }
     
 }

@@ -298,8 +298,10 @@ public class TitleDAOTest {
         String author = "Philip Roth";
         TitleDAO instance = new TitleDAO();
         //Title from db with Same author
-        Title expResult =  new Title (3,"American Pastoral","Philip Roth",2,0,"In American Pastoral, Philip Roth gives us a novel...");
-        Title result = instance.searchByAuthor(author);
+        Title temp = new Title (3,"American Pastoral","Philip Roth",2,0,"In American Pastoral, Philip Roth gives us a novel...");
+        ArrayList<Title> expResult =  new ArrayList();
+        expResult.add(temp);
+        ArrayList<Title> result = instance.searchByAuthor(author);
         assertEquals(expResult, result);
        
     }
@@ -316,8 +318,8 @@ public class TitleDAOTest {
         String author = "Philiip Roth";
         TitleDAO instance = new TitleDAO();
         //No book found for such author in db
-        Title expResult =  null;
-        Title result = instance.searchByAuthor(author);
+        ArrayList<Title> expResult = null;
+        ArrayList<Title> result = instance.searchByAuthor(author);
         assertEquals(expResult, result);
        
     }

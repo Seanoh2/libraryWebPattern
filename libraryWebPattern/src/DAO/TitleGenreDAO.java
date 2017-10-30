@@ -24,10 +24,11 @@ public class TitleGenreDAO extends DAO implements TitleGenreDAOInterface {
 //    public TitleGenreDAO(String libraryDatabase) {
 //        super(libraryDatabase);
 //    }
-    
+
     /**
      * This will return a list of TitleGenre objects by the titleID.<p>
      * TitleGenre objects store Title and Genre objects.
+     *
      * @param titleID Used to find relevant genres.
      * @return ArrayList of TitleGenre objects.
      */
@@ -52,7 +53,7 @@ public class TitleGenreDAO extends DAO implements TitleGenreDAOInterface {
             while (rs.next()) {
                 titleGenre.setGenre(genreDAO.getGenreByID(rs.getInt("genreID")));
                 titleGenre.setTitle(titleDAO.searchByID(rs.getInt("titleID")));
-                
+                genreList.add(titleGenre);
             }
 
         } catch (SQLException e) {
@@ -77,5 +78,4 @@ public class TitleGenreDAO extends DAO implements TitleGenreDAOInterface {
         return genreList;
     }
 
- 
 }

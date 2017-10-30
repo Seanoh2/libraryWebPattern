@@ -48,7 +48,7 @@ public class GenreDAOTest {
         GenreDAO instance = new GenreDAO();
         Genre expResult = new Genre(1,"Science fiction");
         Genre result = instance.getGenreByID(genreID);
-        assertEquals(expResult, result);
+        assertEquals(expResult.getGenre(), result.getGenre());
     }
     
 }
