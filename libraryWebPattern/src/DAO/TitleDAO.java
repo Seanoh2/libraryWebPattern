@@ -19,11 +19,14 @@ import java.util.ArrayList;
  * @author Sean
  */
 public class TitleDAO extends DAO implements TitleDAOInterface {
-/**
- * 
- * @param description
- * @return 
- */
+
+    /**
+     * This will return an ArrayList of Titles by their description.<p>
+     * Method will check for substring inside titleDescription row.<p>
+     * Case Sensitive
+     * @param description This will allow for title to be found based on user input.
+     * @return ArrayList of relevant Titles.
+     */
     @Override
     public ArrayList<Title> getTitlesByDescription(String description) {
         Connection conn = null;
@@ -73,6 +76,15 @@ public class TitleDAO extends DAO implements TitleDAOInterface {
         return titles;
     }
 
+    /**
+     * This will return an ArrayList of Titles by their Author.<p>
+     * Method will check for exact name, not substring.<p>
+     * Case Sensitive.
+     *
+     * @param description This will allow for title to be found based on user
+     * input.
+     * @return ArrayList of relevant Titles.
+     */
     @Override
     public ArrayList<Title> getTitlesByAuthor(String author) {
         Connection conn = null;
@@ -122,6 +134,14 @@ public class TitleDAO extends DAO implements TitleDAOInterface {
         return titles;
     }
 
+    /**
+     * This will return Substring of Titles by their name.<p>
+     * This will check for exact name, not substring.<p>
+     * Case Sensitive.
+     *
+     * @param name This will allow for user to find title by Author
+     * @return ArrayList of relevant Titles.
+     */
     @Override
     public ArrayList<Title> getTitlesByName(String name) {
         Connection conn = null;
@@ -171,6 +191,14 @@ public class TitleDAO extends DAO implements TitleDAOInterface {
         return titles;
     }
 
+    /**
+     * This will return a title from the Database based on id. This will allow
+     * for specific title to be pulled or for other methods to utilize if
+     * needed.
+     *
+     * @param id
+     * @return Title object based on ID.
+     */
     @Override
     public Title getTitleByID(int id) {
         Connection conn = null;
@@ -211,6 +239,13 @@ public class TitleDAO extends DAO implements TitleDAOInterface {
         return title;
     }
 
+    /**
+     * This will update an existing title in the database.
+     *
+     * @param title is the updated data.
+     * @param id used to find title.
+     * @return Confirmation if update was successful.
+     */
     @Override
     public boolean addTitle(Title title) {
         Connection conn = null;
@@ -277,6 +312,12 @@ public class TitleDAO extends DAO implements TitleDAOInterface {
         return result;
     }
 
+    /**
+     * Used to return all titles in database. Can be used to display or to find
+     * info from client.
+     *
+     * @return ArrayList of all titles in db.
+     */
     @Override
     public ArrayList<Title> getAllTitles() {
         Connection con = null;
@@ -324,28 +365,32 @@ public class TitleDAO extends DAO implements TitleDAOInterface {
         return titles;
 
     }
-    
-    public boolean removeTitle(int id){
+
+    /**
+     * This will Delete an existing title in the database.
+     *
+     * @param id used to find title to delete.
+     * @return Confirmation if delete was successful.
+     */
+    public boolean removeTitle(int id) {
         Connection conn = null;
         PreparedStatement ps = null;
         int rs = 0;
         Title temp = null;
         Boolean result = null;
-        
-        try{
+
+        try {
             conn = getConnection();
             String query = "delete from titles where titleID = ?";
             ps = conn.prepareStatement(query);
-            
+
             ps.setInt(1, id);
-            
+
             rs = ps.executeUpdate();
         } catch (SQLException se) {
             System.out.println("SQL Exception occurred: " + se.getMessage());
             se.printStackTrace();
-        } 
-        
-        finally {
+        } finally {
             try {
                 if (ps != null) {
                     ps.close();
@@ -363,11 +408,18 @@ public class TitleDAO extends DAO implements TitleDAOInterface {
         } else {
             result = false;
         }
-        
+
         return result;
 
     }
 
+    /**
+     * This will update an existing title in the database.
+     *
+     * @param title is the updated data.
+     * @param id used to find title.
+     * @return Confirmation if update was successful.
+     */
     @Override
     public boolean updateTitle(int id, Title title) {
         Connection conn = null;

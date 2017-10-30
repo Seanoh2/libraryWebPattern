@@ -363,4 +363,52 @@ public class UserDAO extends DAO implements UserDAOInterface {
         return user;
     }
 
+    /**
+     * This will remove a user from the db User to be removed can't be an admin
+     *
+     * @param id to find user to be removed.
+     * @return error code to indicate whether user was removed, user is an admin
+     * or user does not exist.
+     */
+    @Override
+    public int removeUser(int id) {
+        Connection conn = null;
+        PreparedStatement ps = null;
+        int rs = 0;
+        User temp = null;
+        UserDAO userDAO = new UserDAO();
+
+        temp = userDAO.findUserByID(id);
+        if (temp == null) {
+            return 3;//user does not exist
+        } else if (temp.getIsAdmin() == 1) {
+            return 2;//user is an admin
+        } else {
+            try {
+                conn = getConnection();
+                String query = "DELETE FROM users WHERE userID = ?";
+                ps = conn.prepareStatement(query);
+
+                ps.setInt(1, id);
+                rs = ps.executeUpdate();
+            } catch (SQLException e) {
+                System.out.println("Exception occured in the getUserByEmail() method");
+                e.printStackTrace();
+            } finally {
+                try {
+                    if (ps != null) {
+                        ps.close();
+                    }
+                    if (conn != null) {
+                        closeConnection(conn);
+                    }
+                } catch (SQLException e) {
+                    System.out.println("Exception occured in the finally section in the removeTitle() method");
+                }
+            }
+            //Indicates success
+            return 1;
+        }
+
+    }
 }

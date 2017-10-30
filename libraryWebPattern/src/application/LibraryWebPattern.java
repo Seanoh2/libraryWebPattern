@@ -30,7 +30,7 @@ public class LibraryWebPattern {
         ArrayList<Title> allTitles;
         Scanner input = new Scanner(System.in);
         int choice = -1;
-
+        //   User test = userDAO.findUserByID(2);
         while (choice != 0) {
             // Find out what the user wishes to do
             choice = getMenuChoice(input, user);
@@ -366,14 +366,50 @@ public class LibraryWebPattern {
                             break;
                         }
 
-                        
                     }//end of user input while loop
-                    
+
                     titleDAO.removeTitle(id);
                     break;
                 case 13:
+                {
                     //User Remove - NOTE: CANNOT REMOVE ADMIN
+                    int uID = 0;//id of user
+
+                    while (true) {
+                        System.out.println("User ID:");
+                        //Necessary for capturing integer input, nextInt() causes the scanner to skip the next input, nextLine() does not
+                        try {
+                            // casting string as integer
+                            uID = Integer.parseInt(input.nextLine());
+                        } catch (NumberFormatException e) {
+                            //capturing exception if not a number
+                            e.printStackTrace();
+                        }
+
+                        //Confirm with Admin that id is correct
+                        boolean res = false;
+                        while (!res) {
+                            System.out.println("Is this the correct ID?[Y/N]");
+                            String confirm = input.nextLine();
+                            if (confirm.equals("y") || confirm.equals("Y")) {
+                                res = true;
+                            } // if no, break out and reenter details
+                            else if (confirm.equals("N") || confirm.equals("n")) {
+                                System.out.println("Please enter details again..");
+                                break;
+                            } //if invalid confirmation, loop back and ask for confirmation again
+                            else {
+                                System.out.println("Invalid Answer");
+                            }
+                        }
+                        //only true if "confirm" == "Y", break out to remove user
+                        if (res) {
+                            break;
+                        }
+                    }//end of input loop
+                    userDAO.removeUser(uID);
                     break;
+                }
             }
 
             if (choice == 0) {
