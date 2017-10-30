@@ -80,16 +80,7 @@ public interface TitleDAOInterface {
      * @param author is the author user searched for
      * @return the Title
      */
-    public Title searchByAuthor(String author);
-
-    /**
-     * users can search a books by searching the genre
-     * @param genre is genre user searched for
-     * @return Title
-     */
-    
-    public ArrayList<Title> searchByGenre(String genre);
-
+    public ArrayList<Title> searchByAuthor(String author);
     
     /**
      *  Users can search for a title by the novelName
@@ -105,8 +96,19 @@ public interface TitleDAOInterface {
      */
     public Title searchByID(int id);
     
+    /**
+     * This is used to return an arrayList of all titles in the database.<p>
+     * This will mainly be used to display all titles in database.
+     * @return ArrayList of all titles in DB.d
+     */
     public ArrayList<Title> getAllTitles();
     
+    /**
+     * This is used to update the database of a borrowed books status.
+     * @param titleID Used to identify what title is being updated.
+     * @param newOnLoan New values of OnLoan, usually 0 or 1.
+     * @return
+     */
     public boolean updateOnLoan(int titleID, int newOnLoan);
 
 

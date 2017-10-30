@@ -254,6 +254,7 @@ public class TitleDAO extends DAO implements TitleDAOInterface {
      * Genre name option will be given to the admin True will be returned if
      * genre is Update False will be returned if genre couldn't be Updated
      *
+     * @param genreID
      */
     @Override
     public boolean updateGenre(int genreID, String newGenre) {
@@ -384,6 +385,13 @@ public class TitleDAO extends DAO implements TitleDAOInterface {
         return false;
     }
 
+    /**
+     * This is used to update the database of a borrowed books status.
+     *
+     * @param titleID Used to identify what title is being updated.
+     * @param newOnLoan New values of OnLoan, usually 0 or 1.
+     * @return
+     */
     @Override
     public boolean updateOnLoan(int titleID, int newOnLoan) {
         Connection con = null;
@@ -427,78 +435,28 @@ public class TitleDAO extends DAO implements TitleDAOInterface {
      * returned Query is used to show all titles belonging to the Author
      */
     @Override
-    public Title searchByAuthor(String author) {
-        {
-            Connection con = null;
-            PreparedStatement ps = null;
-            ResultSet rs = null;
-            Title t = null;
-            try {
-                con = getConnection();
+    public ArrayList<Title> searchByAuthor(String author) {
 
-                String query = "Select * from titles where author = ?";
-                ps = con.prepareStatement(query);
-                ps.setString(1, author);
-                rs = ps.executeQuery();
-                if (rs.next()) {
-                    t = new Title(rs.getInt("titleID"), rs.getString("novelName"), rs.getString("author"), rs.getInt("stock"), rs.getInt("onLoan"), rs.getString("titleDescription"));
-                }
-            } catch (SQLException e) {
-                System.out.println("Exception occured in the searchByAuthor() method: " + e.getMessage());
-            } finally {
-                try {
-                    if (rs != null) {
-                        rs.close();
-                    }
-                    if (ps != null) {
-                        ps.close();
-                    }
-                    if (con != null) {
-                        closeConnection(con);
-                    }
-                } catch (SQLException e) {
-                    System.out.println("Exception occured in the finally section of the searchByAuthor() method: " + e.getMessage());
-                }
-            }
-            return t;
-        }
-    }
-
-    /**
-     * This method allows the user to search for a title by its Genre User will
-     * enter a Genre All Titles belonging to the genre will be returned Query is
-     * used to show all titles belonging to the genre
-     */
-
-    @Override
-    public ArrayList<Title> searchByGenre(String genre) {
         Connection con = null;
         PreparedStatement ps = null;
         ResultSet rs = null;
-        Title title = null;
         ArrayList<Title> titles = new ArrayList();
 
         try {
             con = getConnection();
-            String query = "SELECT * FROM titles INNER JOIN titleGenre ON titles.titleID  = titleGenre.titleID INNER JOIN genre ON genre.genreID = titleGenre.genreID WHERE ? = genre.genre";
+            String query = "SELECT * from titles WHERE author = ?";
             ps = con.prepareStatement(query);
-            ps.setString(1, genre);
+            ps.setString(1, author);
             rs = ps.executeQuery();
 
             while (rs.next()) {
-                title = new Title();
-                title.setTitleID(rs.getInt("titleID"));
-                title.setNovelName(rs.getString("novelName"));
-                title.setAuthor(rs.getString("author"));
-                title.setStock(rs.getInt("stock"));
-                title.setOnLoan(rs.getInt("onLoan"));
-                title.setTitleDescription(rs.getString("titleDescription"));
-                titles.add(title);
+
+                Title c = new Title(rs.getInt("titleID"), rs.getString("novelName"), rs.getString("author"), rs.getInt("stock"), rs.getInt("onLoan"), rs.getString("titleDescription"));
+                titles.add(c);
             }
 
         } catch (SQLException e) {
-            System.out.println("Exception occured in the getTitlesByName() method");
-            e.printStackTrace();
+            System.out.println("Exception occured in the searchByAuthor() method");
         } finally {
             try {
                 if (rs != null) {
@@ -511,7 +469,7 @@ public class TitleDAO extends DAO implements TitleDAOInterface {
                     closeConnection(con);
                 }
             } catch (SQLException e) {
-                System.out.println("Exception occured in the finally section in the getTitlesByName() method");
+                System.out.println("Exception occured in the finally section in the searchByAuthor() method");
             }
         }
 
@@ -525,40 +483,39 @@ public class TitleDAO extends DAO implements TitleDAOInterface {
      */
     @Override
     public Title searchByNovelName(String novelName) {
-        {
-            Connection con = null;
-            PreparedStatement ps = null;
-            ResultSet rs = null;
-            Title t = null;
-            try {
-                con = getConnection();
 
-                String query = "Select * from titles where novelName = ?";
-                ps = con.prepareStatement(query);
-                ps.setString(1, novelName);
-                rs = ps.executeQuery();
-                if (rs.next()) {
-                    t = new Title(rs.getInt("titleID"), rs.getString("novelName"), rs.getString("author"), rs.getInt("stock"), rs.getInt("onLoan"), rs.getString("titleDescription"));
+        Connection con = null;
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        Title t = null;
+        try {
+            con = getConnection();
+
+            String query = "Select * from titles where novelName = ?";
+            ps = con.prepareStatement(query);
+            ps.setString(1, novelName);
+            rs = ps.executeQuery();
+            if (rs.next()) {
+                t = new Title(rs.getInt("titleID"), rs.getString("novelName"), rs.getString("author"), rs.getInt("stock"), rs.getInt("onLoan"), rs.getString("titleDescription"));
+            }
+        } catch (SQLException e) {
+            System.out.println("Exception occured in the searchByNovelName() method: " + e.getMessage());
+        } finally {
+            try {
+                if (rs != null) {
+                    rs.close();
+                }
+                if (ps != null) {
+                    ps.close();
+                }
+                if (con != null) {
+                    closeConnection(con);
                 }
             } catch (SQLException e) {
-                System.out.println("Exception occured in the searchByNovelName() method: " + e.getMessage());
-            } finally {
-                try {
-                    if (rs != null) {
-                        rs.close();
-                    }
-                    if (ps != null) {
-                        ps.close();
-                    }
-                    if (con != null) {
-                        closeConnection(con);
-                    }
-                } catch (SQLException e) {
-                    System.out.println("Exception occured in the finally section of the searchByNovelName() method: " + e.getMessage());
-                }
+                System.out.println("Exception occured in the finally section of the searchByNovelName() method: " + e.getMessage());
             }
-            return t;
         }
+        return t;
 
     }
 
@@ -570,42 +527,48 @@ public class TitleDAO extends DAO implements TitleDAOInterface {
      */
     @Override
     public Title searchByID(int id) {
-        {
-            Connection con = null;
-            PreparedStatement ps = null;
-            ResultSet rs = null;
-            Title t = null;
-            try {
-                con = getConnection();
 
-                String query = "Select * from titles where titleID = ?";
-                ps = con.prepareStatement(query);
-                ps.setInt(1, id);
-                rs = ps.executeQuery();
-                if (rs.next()) {
-                    t = new Title(rs.getInt("titleID"), rs.getString("novelName"), rs.getString("author"), rs.getInt("stock"), rs.getInt("onLoan"), rs.getString("titleDescription"));
+        Connection con = null;
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        Title t = null;
+        try {
+            con = getConnection();
+
+            String query = "Select * from titles where titleID = ?";
+            ps = con.prepareStatement(query);
+            ps.setInt(1, id);
+            rs = ps.executeQuery();
+            if (rs.next()) {
+                t = new Title(rs.getInt("titleID"), rs.getString("novelName"), rs.getString("author"), rs.getInt("stock"), rs.getInt("onLoan"), rs.getString("titleDescription"));
+            }
+        } catch (SQLException e) {
+            System.out.println("Exception occured in the searchByID() method: " + e.getMessage());
+        } finally {
+            try {
+                if (rs != null) {
+                    rs.close();
+                }
+                if (ps != null) {
+                    ps.close();
+                }
+                if (con != null) {
+                    closeConnection(con);
                 }
             } catch (SQLException e) {
-                System.out.println("Exception occured in the searchByID() method: " + e.getMessage());
-            } finally {
-                try {
-                    if (rs != null) {
-                        rs.close();
-                    }
-                    if (ps != null) {
-                        ps.close();
-                    }
-                    if (con != null) {
-                        closeConnection(con);
-                    }
-                } catch (SQLException e) {
-                    System.out.println("Exception occured in the finally section of the searchByID() method: " + e.getMessage());
-                }
+                System.out.println("Exception occured in the finally section of the searchByID() method: " + e.getMessage());
             }
-            return t;
         }
+        return t;
+
     }
 
+    /**
+     * This is used to return an arrayList of all titles in the database.<p>
+     * This will mainly be used to display all titles in database.
+     *
+     * @return ArrayList of all titles in DB.d
+     */
     @Override
     public ArrayList<Title> getAllTitles() {
         Connection con = null;

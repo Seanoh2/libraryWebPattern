@@ -57,9 +57,28 @@ public interface BorrowedDAOInterface {
      */
     public boolean addBorrowed(Borrowed borrowed);
     
+    /**
+     * This is used to return all borrowed currently on loan based on userID.<p>
+     * This will mainly be used to display to the user what books they currently have on loan.<p>
+     * @param userID This is used find what borrowed is related to them.
+     * @return ArrayList of all borrowed by them.
+     */
     public ArrayList<Borrowed> getStatusByUserID(int userID);
     
+    /**
+     * This is used to update the status of a borrowed title when they are finished.
+     * This will mainly be used to update the DB when they are finished with their title.
+     * @param borrowedID This will be used to identify what borrowed they need to change
+     * @param newStatus New value of status, usually 0 or 1 to indicate if it is gone or not.
+     * @return Boolean response with true meaning is was updated properly.
+     */
     public boolean updateStatus(int borrowedID, int newStatus);
     
+    /**
+     * Used to return a specific borrowed based on its ID.
+     * This is mainly used to pull data from a specific borrowed.
+     * @param borrowedID Used to identify what borrowed they are looking for
+     * @return Borrowed variable with all details on it.
+     */
     public Borrowed getBorrowedByID(int borrowedID);
 }

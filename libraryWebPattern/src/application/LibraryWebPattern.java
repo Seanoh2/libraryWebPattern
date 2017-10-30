@@ -42,29 +42,47 @@ public class LibraryWebPattern {
             switch (choice) {
 
                 case 1:
+                    /**
+                     * This is the Login case. This allows the user access their
+                     * user account in the database.
+                     */
 
+                    //Getting all relevant user information.
                     System.out.println("Please enter your email:");
                     tempUser.setEmail(input.nextLine());
 
                     System.out.println("Please enter your password:");
                     tempUser.setPassword(input.nextLine());
 
+                    //Attempting to login user with login method.
                     int userID = userDAO.login(tempUser.getEmail(), tempUser.getPassword());
                     tempUser = new User();
 
+                    //If the details were correct and login retrieved a user, set user to their user infomation.
+                    //This will allow the user to access user and admin controls.
                     if (userID != 0) {
                         System.out.println("Login successful!");
                         user = userDAO.findUserByID(userID);
                         System.out.println("Welcome " + user.getFirstName() + "!");
                     } else {
+                        //If the details were incorrect or an issue aries, this message is displayed and no user is logged in.
                         System.out.println("Please try again");
                     }
 
                     break;
 
                 case 2:
+                    /**
+                     * This allows the user to signup to the database. All
+                     * information is validated and then sent to addUser method.
+                     * Once added to db, they recieve a userID, to easily
+                     * identify them.
+                     */
+
+                    //Creating user variable to test user inputs.
                     User result = new User();
 
+                    //Collecting user information.
                     System.out.println("Please enter your email:");
                     tempUser.setEmail(input.nextLine());
 
@@ -86,20 +104,24 @@ public class LibraryWebPattern {
                     System.out.println("Please enter your Address Line 2:");
                     tempUser.setAddressLine2(input.nextLine());
 
+                    //Checking if email is already in use.
                     result = userDAO.getUserByEmail(tempUser.getEmail());
                     if (result == null) {
-
+                        //Attempting to add User to DB
                         boolean addUser = userDAO.addUser(tempUser);
 
+                        //If the user was added sucessfully, they are told so and than logged in automatically.
                         if (addUser) {
                             result = userDAO.getUserByEmail(tempUser.getEmail());
                             user = result;
                             System.out.println("User added!");
                         } else {
+                            //If any issues arised, they are not added and told so.
                             System.out.println("User was not added");
                         }
 
                     } else {
+                        //If the email is in use, the user is told so and not added to DB, as emails need to be unique to allow login.
                         System.out.println("Email already in use");
                     }
 
@@ -129,18 +151,34 @@ public class LibraryWebPattern {
                     break;
 
                 case 4:
+                    /**
+                     * This displays all titles in a condensed for the user. It
+                     * then allows the user to pick what book they would like to
+                     * borrow. It is then added to the user borrowedList and
+                     * stock levels are changed.
+                     */
+
+                    //Displaying all titles to the user so that the user can chose what to borrow.
                     allTitles = titleDAO.getAllTitles();
                     System.out.println("Please enter ID of title you would like to view.");
                     for (Title displayTitle : allTitles) {
                         System.out.print("Title ID: ");
                         System.out.println(displayTitle.getTitleID());
-
                         System.out.println("Title Name: " + displayTitle.getNovelName());
                     }
+                    //Asking the user to enter ID of what title they wish to borrow
                     System.out.println("Please enter ID of title you would like to borrow:");
+
+                    //Choice is saved and than converted to a title object to allow for easier changes.
                     Title titleChoice = titleDAO.searchByID(input.nextInt());
+
+                    //Temp borrowed is created to save all info so that it can be added.
                     Borrowed tempB = new Borrowed(user, titleChoice, 0, 0);
+
+                    //New borrowed added to DB.
                     borrowedDAO.addBorrowed(tempB);
+
+                    //updating title info to decrease stock and increase onLoan.
                     titleDAO.updateStockOfBook(titleChoice.getTitleID(), (titleChoice.getStock() - 1));
                     titleDAO.updateOnLoan(titleChoice.getTitleID(), (titleChoice.getOnLoan() + 1));
                     break;
@@ -151,25 +189,29 @@ public class LibraryWebPattern {
                      * input of user isnt Null Novels details will by returned
                      * Else Invalid name Error will be given to user
                      */
+
+                    //Ask user what title they would like to view.
                     System.out.println("Please enter the novels name");
-                    String n = input.nextLine();
-                    title = titleDAO.searchByNovelName(n);
+
+                    //Searching database if any titles contain that name.
+                    title = titleDAO.searchByNovelName(input.nextLine());
+
+                    //If resonse isn't empty it is displayed to the user.
                     if (title != null) {
+                        //Title info displayed in a readable format.
                         System.out.print("Title Name: ");
                         System.out.println(title.getNovelName());
-
                         System.out.print("Title Author: ");
                         System.out.println(title.getAuthor());
-
                         System.out.print("Title Description: ");
                         System.out.println(title.getTitleDescription());
-
                         System.out.print("Currently in Stock: ");
                         System.out.println(title.getStock());
                         System.out.println("");
                     } else {
+                        
+                        //If any issue occurs, error is displayed.
                         System.out.println("Invalid name");
-
                     }
                     break;
 
@@ -179,23 +221,24 @@ public class LibraryWebPattern {
                      * input of user isnt Null Novels details will by returned
                      * Else Invalid Author Error will be given to user
                      */
+
+                    //Ask user what titles they would like to view based on author.
                     System.out.println("Please enter the Authors name");
-                    String a = input.nextLine();
-                    title = titleDAO.searchByAuthor(a);
+
+                    //User input is saved and than DB is check if any titles are made by input.
+                    allTitles = titleDAO.searchByAuthor(input.nextLine());
+
+                    //If response isn't empty, it is displayed to the user
                     if (title != null) {
-                        System.out.print("Title Name: ");
-                        System.out.println(title.getNovelName());
-
-                        System.out.print("Title Author: ");
-                        System.out.println(title.getAuthor());
-
-                        System.out.print("Title Description: ");
-                        System.out.println(title.getTitleDescription());
-
-                        System.out.print("Currently in Stock: ");
-                        System.out.println(title.getStock());
-                        System.out.println("");
+                        for (Title displayTitle : allTitles) {
+                            System.out.print("Title ID: ");
+                            System.out.println(displayTitle.getTitleID());
+                            System.out.println("Title Name: " + displayTitle.getNovelName());
+                            System.out.println("");
+                        }
                     } else {
+                        
+                        //If any issue occurs, error is displayed.
                         System.out.println("Invalid Author");
 
                     }
@@ -203,106 +246,123 @@ public class LibraryWebPattern {
 
                 case 7:
                     /**
-                     * User can search for a novel by entering Genre If input of
-                     * user isnt Null Novels details will by returned Else
-                     * Invalid genre Error will be given to user
+                     * User can search for a novel by entering novels id If
+                     * input of user is greater than 0 Then return the novel
+                     * Else Invalid id Error will be given to user
                      */
-                    System.out.println("Please enter the genre name");
-                    allTitles = titleDAO.searchByGenre(input.nextLine());
-                    for (Title all : allTitles) {
+                    
+                    //Askin user to enter title ID they would like to view.
+                    System.out.println("Please enter the title Id");
+                    
+                    //Attempting to call method if any title exist with ID.
+                    title = titleDAO.searchByID(input.nextInt());
+                    
+                    //If title is not null, display info.
+                    if (title != null) {
+                        //Displaying title info in readable format.
                         System.out.print("Title Name: ");
-                        System.out.println(all.getNovelName());
-
+                        System.out.println(title.getNovelName());
                         System.out.print("Title Author: ");
-                        System.out.println(all.getAuthor());
-
+                        System.out.println(title.getAuthor());
                         System.out.print("Title Description: ");
-                        System.out.println(all.getTitleDescription());
-
+                        System.out.println(title.getTitleDescription());
                         System.out.print("Currently in Stock: ");
-                        System.out.println(all.getStock());
+                        System.out.println(title.getStock());
                         System.out.println("");
+                    } else {
+                        
+                        //If any issue occurs, error is displayed.
+                        System.out.println("Invalid ID");
+
                     }
                     break;
 
                 case 8:
                     /**
-                     * User can search for a novel by entering novels id If
-                     * input of user is greater than 0 Then return the novel
-                     * Else Invalid id Error will be given to user
+                     * This is used to display all relevant borrowed in DB.
+                     * This is user specific based on who is logged in.
                      */
-                    System.out.println("Please enter the title Id");
-                    int y = input.nextInt();
-                    title = titleDAO.searchByID(y);
-                    if (y > 0) {
-                        System.out.print("Title Name: ");
-                        System.out.println(title.getNovelName());
-
-                        System.out.print("Title Author: ");
-                        System.out.println(title.getAuthor());
-
-                        System.out.print("Title Description: ");
-                        System.out.println(title.getTitleDescription());
-
-                        System.out.print("Currently in Stock: ");
-                        System.out.println(title.getStock());
-                        System.out.println("");
-                    } else {
-                        System.out.println("Invalid ID");
-
-                    }
-                    break;
                     
-                case 9:
+                    //Method is ran to find all borrowed related to user.
                     borrowedList = borrowedDAO.getBorrowedByUserID(user.getUserID());
+                    
+                    //Check to see if borrowedList isnt empty and there is borrowed related to user.
+                    if(!(borrowedList.isEmpty())) {
+                        
+                    //Loop to display information to user.
                     for (Borrowed all : borrowedList) {
+                        
+                        //Displaying information in a readable format.
                         System.out.print("Title Name: ");
                         System.out.println(all.getTitle().getNovelName());
-
                         System.out.print("Days borrowed by User: ");
                         System.out.println(all.getDaysBorrowed());
-
                         System.out.print("Status: ");
-                        if(all.getStatus() == 0) {
+                        
+                        //Check to display status in readable format.
+                        if (all.getStatus() == 0) {
                             System.out.println("Held by user");
                         } else {
                             System.out.println("Returned");
                         }
                         System.out.println("");
                     }
+                    }else{
+                        
+                        //If no borrowed are found, the user is notified.
+                        System.out.println("No borrowed found for current user.");
+                }
                     break;
-                    
-                case 10:
-                    borrowedList = borrowedDAO.getStatusByUserID(user.getUserID());
-                    if(!(borrowedList.isEmpty())) {
-                    for (Borrowed all : borrowedList) {
-                        System.out.println("Borrowed ID:");
-                        System.out.println(all.getBorrowedID());
-                        
-                        System.out.print("Title Name: ");
-                        System.out.println(all.getTitle().getNovelName());
 
-                        System.out.print("Days borrowed by User: ");
-                        System.out.println(all.getDaysBorrowed());
+                case 9:
+                    /**
+                     * This method is used to display all user related borrowed that isn't returned yet.
+                     * Than the user selects what title they would like to return.
+                     * It is than updated to display this change.
+                     */
+                    
+                    //Method is ran to find all borrowed related to user.
+                    borrowedList = borrowedDAO.getStatusByUserID(user.getUserID());
+                    
+                    //Check to see if borrowedList isnt empty and there is borrowed related to user.
+                    if (!(borrowedList.isEmpty())) {
                         
-                        System.out.println("");
-                    }
-                    
-                    System.out.println("Please enter BorrowedID that you would like to return:");
-                    Borrowed borrowedChoice = borrowedDAO.getBorrowedByID(input.nextInt());
-                    
-                    System.out.println(borrowedChoice.getBorrowedID());
-                    
-                    borrowedDAO.updateStatus(borrowedChoice.getBorrowedID(),1);
-                    titleDAO.updateStockOfBook(borrowedChoice.getTitle().getTitleID(), (borrowedChoice.getTitle().getStock() + 1));
-                    titleDAO.updateOnLoan(borrowedChoice.getTitle().getTitleID(), (borrowedChoice.getTitle().getOnLoan() - 1));
+                        //Loop to display information to user.
+                        for (Borrowed all : borrowedList) {
+                            
+                            //Displaying information in a readable format.
+                            System.out.println("Borrowed ID:");
+                            System.out.println(all.getBorrowedID());
+                            System.out.print("Title Name: ");
+                            System.out.println(all.getTitle().getNovelName());
+                            System.out.print("Days borrowed by User: ");
+                            System.out.println(all.getDaysBorrowed());
+                            System.out.println("");
+                        }
+
+                        //User is prompted to enter borrowedID they would like to return.
+                        System.out.println("Please enter BorrowedID that you would like to return:");
+                        
+                        //input is saved and converted to usable object with relevant information.
+                        Borrowed borrowedChoice = borrowedDAO.getBorrowedByID(input.nextInt());
+
+                        //Title information is updated, first borrowed status is set to 1 to indicate it is no longer on loan.
+                        borrowedDAO.updateStatus(borrowedChoice.getBorrowedID(), 1);
+                        
+                        //Next, update done to title stock levels to indicate a title is returned.
+                        titleDAO.updateStockOfBook(borrowedChoice.getTitle().getTitleID(), (borrowedChoice.getTitle().getStock() + 1));
+                        
+                        //Finally, onLoan is decreased to allow show less titles are on loan.
+                        titleDAO.updateOnLoan(borrowedChoice.getTitle().getTitleID(), (borrowedChoice.getTitle().getOnLoan() - 1));
                     } else {
+                        
+                        //If no borrowed are found, the user is notified.
                         System.out.println("No books currently borrowed.");
                     }
-                    
+
                     break;
 
-                case 11:
+                case 10:
                     System.out.println("Are you sure you wish to log out " + user.getFirstName() + "?");
                     System.out.println("Y/N");
                     String logOut = input.nextLine();
@@ -313,7 +373,7 @@ public class LibraryWebPattern {
                     }
                     break;
 
-                case 12:
+                case 11:
                     /**
                      * To add a new Title you must be an admin An Id is asked
                      * from the user to enter before adding title If id == 1 (1
@@ -351,7 +411,7 @@ public class LibraryWebPattern {
                     }
                     break;
 
-                case 13:
+                case 12:
                     /**
                      * To Update a title you must be an admin An Id is asked
                      * from the user to enter before Updating name If id == 1 (1
@@ -383,7 +443,7 @@ public class LibraryWebPattern {
                     }
                     break;
 
-                case 14:
+                case 13:
                     /**
                      * To Update a title you must be an admin An Id is asked
                      * from the user to enter before Updating author If id == 1
@@ -415,7 +475,7 @@ public class LibraryWebPattern {
                     }
                     break;
 
-                case 15:
+                case 14:
                     /**
                      * To Update a title you must be an admin An Id is asked
                      * from the user to enter before Updating genre If id == 1
@@ -434,8 +494,7 @@ public class LibraryWebPattern {
 
                         boolean successful = titleDAO.updateGenre(genreId, newGenre);
                         if (successful) {
-                            System.out.println("Genre updated successfully, details are now: ");
-                            titleDAO.searchByGenre(newGenre);
+                            System.out.println("Genre updated successfully");
                             System.out.println(newGenre + " is the genre for genre id + " + genreId);
                         } else {
                             System.out.println("Genre could not be updated");
@@ -446,7 +505,7 @@ public class LibraryWebPattern {
                     }
                     break;
 
-                case 16:
+                case 15:
                     /**
                      * To Update a title you must be an admin An Id is asked
                      * from the user to enter before Updating desc If id == 1 (1
@@ -476,7 +535,7 @@ public class LibraryWebPattern {
                     }
                     break;
 
-                case 17:
+                case 16:
                     /**
                      * To Update a title you must be an admin An Id is asked
                      * from the user to enter before Updating Stock If id == 1
@@ -506,7 +565,7 @@ public class LibraryWebPattern {
                     }
                     break;
 
-                case 18:
+                case 17:
                     /**
                      * To Remove a title you must be an admin If id == 1 (1 =
                      * admin, 0 = user) An option is given to enter Title ID
@@ -530,7 +589,7 @@ public class LibraryWebPattern {
                     }
                     break;
 
-                case 19:
+                case 18:
                     //User Remove - NOTE: CANNOT REMOVE ADMIN
                     int uID = 0;//id of user
 
@@ -600,23 +659,22 @@ public class LibraryWebPattern {
                 System.out.println("4) Borrow a book");
                 System.out.println("5) Search a title by name");
                 System.out.println("6) Search a title by Author");
-                System.out.println("7) Search a title by Genre");
-                System.out.println("8) Search a title by id");
-                System.out.println("9) View borrowed books");
-                System.out.println("10) Return borrowed book(s)");
-                System.out.println("11) Log out");
+                System.out.println("7) Search a title by id");
+                System.out.println("8) View borrowed books");
+                System.out.println("9) Return borrowed book(s)");
+                System.out.println("10) Log out");
             }
             if (user.getIsAdmin() == 1) {
                 System.out.println("");
                 System.out.println("-ADMIN CONTROLS-");
-                System.out.println("12) Add title");
-                System.out.println("13) Update title name");
-                System.out.println("14) Update title author");
-                System.out.println("15) Update title genre");
-                System.out.println("16) Update title descripition");
-                System.out.println("17) Update title stock levels");
-                System.out.println("18) Remove title");
-                System.out.println("19) Remove user");
+                System.out.println("11) Add title");
+                System.out.println("12) Update title name");
+                System.out.println("13) Update title author");
+                System.out.println("14) Update title genre");
+                System.out.println("15) Update title descripition");
+                System.out.println("16) Update title stock levels");
+                System.out.println("17) Remove title");
+                System.out.println("18) Remove user");
             }
 
             choice = sc.nextInt();
