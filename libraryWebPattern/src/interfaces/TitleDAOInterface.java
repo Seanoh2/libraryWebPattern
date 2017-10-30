@@ -36,44 +36,11 @@ public interface TitleDAOInterface {
     public boolean deleteTitleById(int titleId);
 
     /**
-     Admin can only change the Title name
-     * @param titleID is used to search the book
-     * @param newNovelName will be the updated title name
-     * @return True if updated
+     * This will update an existing title in the database.
+     * @param title used to be added to database.
+     * @return Confirmation if update was successful.
      */
-    public boolean updateTitle(int titleID, String newNovelName);
-
-    /**
-     * Admin can only change the Author name
-     * @param titleID is used to search the book
-     * @param newAuthorName is the new name of author for the book
-     * @return true if updated
-     */
-    public boolean updateAuthor(int titleID, String newAuthorName);
-
-    /**
-     *Admin can only change the title genre
-     * @param titleID is used to search the book
-     * @param newGenre is updated
-     * @return
-     */
-    public boolean updateGenre(int titleID, String newGenre);
-
-    /**
-     * Admin can only change the description
-     * @param titleID is used to search the book
-     * @param newDescription is the updated description of the book
-     * @return true if updated
-     */
-    public boolean updateDescription (int titleID, String newDescription);
-    
-    /**
-     * Admin can only change the stock level of the book
-     * @param titleID is used to search the book
-     * @param newStock is the new stock of the book
-     * @return true if updated
-     */
-    public boolean updateStockOfBook (int titleID, int newStock);
+    public boolean updateTitle(int id, Title title);
     
     /**
      * Users can search for a book by searching the authors name
@@ -95,21 +62,4 @@ public interface TitleDAOInterface {
      * @return Title
      */
     public Title searchByID(int id);
-    
-    /**
-     * This is used to return an arrayList of all titles in the database.<p>
-     * This will mainly be used to display all titles in database.
-     * @return ArrayList of all titles in DB.d
-     */
-    public ArrayList<Title> getAllTitles();
-    
-    /**
-     * This is used to update the database of a borrowed books status.
-     * @param titleID Used to identify what title is being updated.
-     * @param newOnLoan New values of OnLoan, usually 0 or 1.
-     * @return
-     */
-    public boolean updateOnLoan(int titleID, int newOnLoan);
-
-
 }

@@ -159,7 +159,7 @@ public class LibraryWebPattern {
                      */
 
                     //Displaying all titles to the user so that the user can chose what to borrow.
-                    allTitles = titleDAO.getAllTitles();
+                    allTitles = titleDAO.viewAllTitles();
                     System.out.println("Please enter ID of title you would like to view.");
                     for (Title displayTitle : allTitles) {
                         System.out.print("Title ID: ");
@@ -176,11 +176,15 @@ public class LibraryWebPattern {
                     Borrowed tempB = new Borrowed(user, titleChoice, 0, 0);
 
                     //New borrowed added to DB.
-                    borrowedDAO.addBorrowed(tempB);
-
+                    if(borrowedDAO.addBorrowed(tempB)) {
+                    System.out.println("Borrowing successful");
                     //updating title info to decrease stock and increase onLoan.
-                    titleDAO.updateStockOfBook(titleChoice.getTitleID(), (titleChoice.getStock() - 1));
-                    titleDAO.updateOnLoan(titleChoice.getTitleID(), (titleChoice.getOnLoan() + 1));
+                    titleChoice.setStock((titleChoice.getStock() - 1));
+                    titleChoice.setOnLoan((titleChoice.getOnLoan() + 1));
+                    titleDAO.updateTitle(titleChoice.getTitleID(), titleChoice);
+                    } else {
+                        System.out.println("Error");
+                    }
                     break;
 
                 case 5:
@@ -350,10 +354,13 @@ public class LibraryWebPattern {
                         borrowedDAO.updateStatus(borrowedChoice.getBorrowedID(), 1);
                         
                         //Next, update done to title stock levels to indicate a title is returned.
-                        titleDAO.updateStockOfBook(borrowedChoice.getTitle().getTitleID(), (borrowedChoice.getTitle().getStock() + 1));
-                        
+                        title = borrowedChoice.getTitle();
+                        title.setStock((title.getStock() + 1));
+                                                
                         //Finally, onLoan is decreased to allow show less titles are on loan.
-                        titleDAO.updateOnLoan(borrowedChoice.getTitle().getTitleID(), (borrowedChoice.getTitle().getOnLoan() - 1));
+                        title.setOnLoan((title.getOnLoan() - 1));
+                        titleDAO.updateTitle(title.getTitleID(), title);
+
                     } else {
                         
                         //If no borrowed are found, the user is notified.
@@ -412,160 +419,135 @@ public class LibraryWebPattern {
                     break;
 
                 case 12:
-                    /**
-                     * To Update a title you must be an admin An Id is asked
-                     * from the user to enter before Updating name If id == 1 (1
-                     * = admin, 0 = user) An option is given to enter titles ID
-                     * that needs updating Admin will then enter the New name
-                     * for this Title Displays the new name if Successfully
-                     * updated If name wasnt successfully updated - displays
-                     * meaningful message.
-                     */
-                    if (user.getIsAdmin() == 1) {
-                        System.out.println("Please enter the id of the Title to be updated: ");
-                        int titleId1 = input.nextInt();
-
-                        System.out.println("Please enter the new name for this title: ");
-                        String newName = input.nextLine();
-
-                        boolean successful = titleDAO.updateTitle(titleId1, newName);
-                        if (successful) {
-                            System.out.println("Name updated successfully, details are now: ");
-                            titleDAO.searchByNovelName(newName);
-                            System.out.println(newName + " is the new name of title " + titleId1);
-                        } else {
-                            System.out.println("Title could not be updated");
-
-                        }
-                    } else {
-                        System.out.println("Not an admin");
-
+                    //Title Detail Modify
+                    //Fetch all titles, choose title to update
+                    allTitles = titleDAO.viewAllTitles();
+                    title = new Title();
+                    ArrayList tidList = new ArrayList();
+                    int tid = 0; //title id
+                    String name = null; //novelName
+                    String author = null; //author
+                    int stock = 0; //stock
+                    int onLoan = 0; //onLoan
+                    String desc = null; //titleDescription
+                    for(Title t : allTitles) {
+                        System.out.println("-------------------------------------------------");
+                        System.out.print("Title ID: " + t.getTitleID());
+                        System.out.println("Title Name: "+t.getNovelName());
+                        //add ids for error checking
+                        tidList.add(t.getTitleID());
                     }
+                    //error checking zone
+                    while(true){
+                        try{
+                            System.out.println("Please enter ID of title you would like to modify.");
+                            tid = Integer.parseInt(input.nextLine());
+                            boolean success = false;
+                            for(int i=0;i<tidList.size();i++){
+                                if(tid == (int)tidList.get(i)) {
+                                    //Success!
+                                    success = true;
+                                    break;
+                                }
+                            }
+                            //allow user to modify or keep same values
+                            if(success){
+                                //fetch the title
+                                title = titleDAO.searchByID(tid);
+                                System.out.println("Please Modify the values of the selected title\nOld Values will be put in brackets");
+                                System.out.println("Enter new value or \"none\" if there is no change required");
+                                System.out.println("Title Name("+title.getNovelName()+"):");
+                                name = input.nextLine();
+                                if(name.equals("none")){
+                                    name = title.getNovelName();
+                                }
+                                System.out.println("Title Author("+title.getAuthor()+"):");
+                                author = input.nextLine();
+                                if (author.equals("none")) {
+                                    author = title.getAuthor();
+                                }
+                                System.out.println("Title Description("+title.getTitleDescription()+"):");
+                                desc = input.nextLine();
+                                if(desc.equals("none")) {
+                                    desc = title.getTitleDescription();
+                                }
+                                System.out.println("Title Stock("+title.getStock()+"):");
+                                //Necessary for capturing integer input, nextInt() causes the scanner to skip the next input, nextLine() does not
+                                try {
+                                    // casting string as integer
+                                    String temp = input.nextLine();
+                                    if(!temp.equals("none")){
+                                        stock = Integer.parseInt(temp);
+                                    }
+                                    else {
+                                        stock = title.getStock();
+                                    }
+                                    
+                                } catch (NumberFormatException e) {
+                                    //capturing exception if not a number
+                                    e.printStackTrace();
+                                }
+                                System.out.println("Titles on loan("+title.getOnLoan()+"):");
+                                try {
+                                    // casting string as integer
+                                    String temp = input.nextLine();
+                                    if(!temp.equals("none")){
+                                        onLoan = Integer.parseInt(temp);
+                                    }
+                                    else {
+                                        onLoan = title.getOnLoan();
+                                    }
+                                    
+                                } catch (NumberFormatException e) {
+                                    //capturing exception if not a number
+                                    e.printStackTrace();
+                                }
+
+
+                                // Input Error Checking
+                                if(name != null && !name.equals("")) {
+                                    if(author != null && !author.equals("")) {
+                                        if(desc != null && !desc.equals("")) {
+                                            //Confirm with User that details are correct
+                                            boolean res = false;
+                                            while(!res) {
+                                                System.out.println("Are these details correct?[Y/N]");
+                                                String confirm = input.nextLine();
+                                                //if yes, break out of confirmation and add title
+                                                if(confirm.equals("y") || confirm.equals("Y")) {
+                                                    res = true;
+                                                }
+                                                // if no, break out and reenter details
+                                                else if(confirm.equals("N") || confirm.equals("n")) {
+                                                    System.out.println("Please enter details again..");
+                                                    break;
+                                                }
+                                                //if invalid confirmation, loop back and ask for confirmation again
+                                                else {
+                                                    System.out.println("Invalid Answer");
+                                                }
+                                            }
+                                            //only true if "confirm" == "Y", break out to add title
+                                            if(res){
+                                                break;
+                                            }
+                                        } 
+                                    }
+                                }//End of error checking
+                                // invalid input
+                                System.out.println("Invalid Details! Please enter details again..");
+                            }//End of User Input
+                        } catch (NumberFormatException e) {
+                                //capturing exception if not a number
+                                e.printStackTrace();
+                        }
+                    }
+                    //send new values to db
+                    Title updateTitle = new Title(name, author, stock, onLoan, desc);
+                    titleDAO.updateTitle(tid, updateTitle);
                     break;
 
                 case 13:
-                    /**
-                     * To Update a title you must be an admin An Id is asked
-                     * from the user to enter before Updating author If id == 1
-                     * (1 = admin, 0 = user) An option is given to enter titles
-                     * Id that needs updating Admin will then enter the New
-                     * Author for this Title Displays the new Author if
-                     * Successfully updated If Author wasnt successfully updated
-                     * - displays meaningful message.
-                     */
-                    if (user.getIsAdmin() == 1) {
-                        System.out.println("Please enter the id of the Title to be updated: ");
-                        int titleId2 = input.nextInt();
-
-                        System.out.println("Please enter the new Author for this title: ");
-                        String newAuthor = input.nextLine();
-
-                        boolean successful = titleDAO.updateTitle(titleId2, newAuthor);
-                        if (successful) {
-                            System.out.println("Author updated successfully, details are now: ");
-                            titleDAO.searchByAuthor(newAuthor);
-                            System.out.println(newAuthor + " is the new author of " + titleId2);
-                        } else {
-                            System.out.println("Title could not be updated");
-
-                        }
-                    } else {
-                        System.out.println("Not an admin");
-
-                    }
-                    break;
-
-                case 14:
-                    /**
-                     * To Update a title you must be an admin An Id is asked
-                     * from the user to enter before Updating genre If id == 1
-                     * (1 = admin, 0 = user) An option is given to enter Genres
-                     * ID that needs updating Admin will then enter the Genre
-                     * for this Title Displays the new Genre if Successfully
-                     * Updated If Genre wasnt successfully Updated - displays
-                     * meaningful message.
-                     */
-                    if (user.getIsAdmin() == 1) {
-                        System.out.println("Please enter the id of the Genre to be updated: ");
-                        int genreId = input.nextInt();
-
-                        System.out.println("Please enter the new Genre for this title: ");
-                        String newGenre = input.nextLine();
-
-                        boolean successful = titleDAO.updateGenre(genreId, newGenre);
-                        if (successful) {
-                            System.out.println("Genre updated successfully");
-                            System.out.println(newGenre + " is the genre for genre id + " + genreId);
-                        } else {
-                            System.out.println("Genre could not be updated");
-                        }
-                    } else {
-                        System.out.println("Not an admin");
-
-                    }
-                    break;
-
-                case 15:
-                    /**
-                     * To Update a title you must be an admin An Id is asked
-                     * from the user to enter before Updating desc If id == 1 (1
-                     * = admin, 0 = user) An option is given to enter titles ID
-                     * that needs updating Admin will then enter the New
-                     * description for this Title Displays the new Description
-                     * and Title Id if Successfully Updated If Description wasnt
-                     * successfully updated - displays meaningful message.
-                     */
-                    if (user.getIsAdmin() == 1) {
-                        System.out.println("Please enter the id of the Title to be updated: ");
-                        int titleId4 = input.nextInt();
-
-                        System.out.println("Please enter the new description for this title: ");
-                        String newDes = input.nextLine();
-
-                        boolean successful = titleDAO.updateGenre(titleId4, newDes);
-                        if (successful) {
-                            System.out.println("Description updated successfully, details are now: ");
-                            System.out.println(newDes + " is the new desc for the title " + titleId4);
-                        } else {
-                            System.out.println("Description could not be updated");
-                        }
-                    } else {
-                        System.out.println("Not an admin");
-
-                    }
-                    break;
-
-                case 16:
-                    /**
-                     * To Update a title you must be an admin An Id is asked
-                     * from the user to enter before Updating Stock If id == 1
-                     * (1 = admin, 0 = user) An option is given to enter Titles
-                     * ID that needs updating Admin will then enter the Stock
-                     * amount for this Title Displays the Stock and Title Id if
-                     * Successfully Updated If Stock wasnt successfully Updated
-                     * - displays meaningful message.
-                     */
-                    if (user.getIsAdmin() == 1) {
-                        System.out.println("Please enter the id of the Title to be updated: ");
-                        int titleId5 = input.nextInt();
-
-                        System.out.println("Please enter the new Stock amount for this title: ");
-                        int newStock = input.nextInt();
-
-                        boolean successful = titleDAO.updateStockOfBook(titleId5, newStock);
-                        if (successful) {
-                            System.out.println("Stock amount updated successfully, details are now: ");
-                            System.out.println(newStock + " is the new stock amount");
-                        } else {
-                            System.out.println("Stock could not be updated");
-                        }
-                    } else {
-                        System.out.println("Not an admin");
-
-                    }
-                    break;
-
-                case 17:
                     /**
                      * To Remove a title you must be an admin If id == 1 (1 =
                      * admin, 0 = user) An option is given to enter Title ID
@@ -589,7 +571,7 @@ public class LibraryWebPattern {
                     }
                     break;
 
-                case 18:
+                case 14:
                     //User Remove - NOTE: CANNOT REMOVE ADMIN
                     int uID = 0;//id of user
 
@@ -647,7 +629,7 @@ public class LibraryWebPattern {
 
     public static int getMenuChoice(Scanner sc, User user) {
         int choice = -1;
-        while (choice < 0 || choice > 20) {
+        while (choice < 0 || choice > 14) {
             System.out.println("Please select one of the following options:");
             System.out.println("0) Exit the application");
             System.out.println("1) Login");
@@ -668,13 +650,9 @@ public class LibraryWebPattern {
                 System.out.println("");
                 System.out.println("-ADMIN CONTROLS-");
                 System.out.println("11) Add title");
-                System.out.println("12) Update title name");
-                System.out.println("13) Update title author");
-                System.out.println("14) Update title genre");
-                System.out.println("15) Update title descripition");
-                System.out.println("16) Update title stock levels");
-                System.out.println("17) Remove title");
-                System.out.println("18) Remove user");
+                System.out.println("12) Update title");
+                System.out.println("13) Remove title");
+                System.out.println("14) Remove user");
             }
 
             choice = sc.nextInt();
