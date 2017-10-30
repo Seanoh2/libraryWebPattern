@@ -53,8 +53,13 @@ public interface BorrowedDAOInterface {
      * Admin user is imported to check if they are a admin before adding borrowed object.<p>
      * Method rejected if User object isn't admin.
      * @param borrowed This will be used to add a new borrowed to database.
-     * @param Admin This will be used to ensure user is an admin.
      * @return boolean response if it was successful or an issue happened.
      */
-    public boolean addBorrowed(Borrowed borrowed, User Admin);
+    public boolean addBorrowed(Borrowed borrowed);
+    
+    public ArrayList<Borrowed> getStatusByUserID(int userID);
+    
+    public boolean updateStatus(int borrowedID, int newStatus);
+    
+    public Borrowed getBorrowedByID(int borrowedID);
 }

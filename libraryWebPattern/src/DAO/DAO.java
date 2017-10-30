@@ -16,7 +16,13 @@ import java.sql.SQLException;
  * @author Seanoh
  */
 public class DAO {
-
+//    private String libraryDatabase;
+//    
+//    public DAO(String libraryDatabase)
+//    {
+//        this.libraryDatabase = libraryDatabase;
+//    }
+    
     public Connection getConnection() {
         // Create variables to hold database details
         String driver = "com.mysql.jdbc.Driver";

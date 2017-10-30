@@ -11,76 +11,103 @@ import java.util.ArrayList;
 
 /**
  *
- * @author Sean
+ * @author Ayesha
  */
 public interface TitleDAOInterface {
 
-    /**
-     * This will return an ArrayList of Titles by their description.<p>
-     * Method will check for substring inside titleDescription row.<p>
-     * Case Sensitive
-     * @param description This will allow for title to be found based on user input.
-     * @return ArrayList of relevant Titles.
-     */
-    public ArrayList<Title> getTitlesByDescription(String description);
-    
-
-    /**
-     * This will return an ArrayList of Titles by their Author.<p>
-     * Method will check for exact name, not substring.<p>
-     * Case Sensitive.
-     * @param description This will allow for title to be found based on user input.
-     * @return ArrayList of relevant Titles.
-     */
-    public ArrayList<Title> getTitlesByAuthor(String description);
-
-
-    /**
-     * This will return Substring of Titles by their name.<p>
-     * This will check for exact name, not substring.<p>
-     * Case Sensitive.
-     * @param name This will allow for user to find title by Author
-     * @return ArrayList of relevant Titles.
-     */
-    public ArrayList<Title> getTitlesByName(String name);
-    
-
-    /**
-     * This will return a title from the Database based on id.
-     * This will allow for specific title to be pulled or for other methods to utilize if needed.
-     * @param id
-     * @return Title object based on ID.
-     */
-    public Title getTitleByID(int id);
-    
-
-    /**
-     * This will add a title into the database.
-     * @param title used to be added to database.
-     * @return Confirmation if add was successful.
-     */
-    public boolean addTitle(Title title);
-    
-    /**
-     * This will update an existing title in the database.
-     * @param title is the updated data.
-     * @param id used to find title.
-     * @return Confirmation if update was successful.
-     */
-    public boolean updateTitle(int id, Title title);
-    
+  
     /**
      * Used to return all titles in database.
-     * Can be used to display or to find info from client.
      * @return ArrayList of all titles in db.
      */
-    public ArrayList<Title> getAllTitles();
-    
+    public ArrayList<Title> viewAllTitles();
+
+    /**
+     * Admins are only allowed to add a new title
+     * @param title the new title added
+     * @return True if added
+     */
+    public boolean addTitle(Title title);
+    /**
+     * Only admins can delete a title
+     * @param titleId will be used to delete a title as its unique
+     * @return true if deleted
+     */
+    public boolean deleteTitleById(int titleId);
+
+    /**
+     Admin can only change the Title name
+     * @param titleID is used to search the book
+     * @param newNovelName will be the updated title name
+     * @return True if updated
+     */
+    public boolean updateTitle(int titleID, String newNovelName);
+
+    /**
+     * Admin can only change the Author name
+     * @param titleID is used to search the book
+     * @param newAuthorName is the new name of author for the book
+     * @return true if updated
+     */
+    public boolean updateAuthor(int titleID, String newAuthorName);
+
+    /**
+     *Admin can only change the title genre
+     * @param titleID is used to search the book
+     * @param newGenre is updated
+     * @return
+     */
+    public boolean updateGenre(int titleID, String newGenre);
+
+    /**
+     * Admin can only change the description
+     * @param titleID is used to search the book
+     * @param newDescription is the updated description of the book
+     * @return true if updated
+     */
+    public boolean updateDescription (int titleID, String newDescription);
     
     /**
-     * This will Delete an existing title in the database.
-     * @param id used to find title to delete.
-     * @return Confirmation if delete was successful.
+     * Admin can only change the stock level of the book
+     * @param titleID is used to search the book
+     * @param newStock is the new stock of the book
+     * @return true if updated
      */
-    public boolean removeTitle(int id);
+    public boolean updateStockOfBook (int titleID, int newStock);
+    
+    /**
+     * Users can search for a book by searching the authors name
+     * @param author is the author user searched for
+     * @return the Title
+     */
+    public Title searchByAuthor(String author);
+
+    /**
+     * users can search a books by searching the genre
+     * @param genre is genre user searched for
+     * @return Title
+     */
+    
+    public ArrayList<Title> searchByGenre(String genre);
+
+    
+    /**
+     *  Users can search for a title by the novelName
+     * @param novelName is the what the user searched for
+     * @return Title
+     */
+    public Title searchByNovelName(String novelName);
+    
+    /**
+     * users can search a title by id 
+     * @param id is the what the user searched for
+     * @return Title
+     */
+    public Title searchByID(int id);
+    
+    public ArrayList<Title> getAllTitles();
+    
+    public boolean updateOnLoan(int titleID, int newOnLoan);
+
+
 }

@@ -370,7 +370,6 @@ public class UserDAO extends DAO implements UserDAOInterface {
      * @return error code to indicate whether user was removed, user is an admin
      * or user does not exist.
      */
-    @Override
     public int removeUser(int id) {
         Connection conn = null;
         PreparedStatement ps = null;

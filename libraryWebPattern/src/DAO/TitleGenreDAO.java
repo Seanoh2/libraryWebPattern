@@ -20,6 +20,10 @@ import java.util.ArrayList;
  * @author Seanoh
  */
 public class TitleGenreDAO extends DAO implements TitleGenreDAOInterface {
+//
+//    public TitleGenreDAO(String libraryDatabase) {
+//        super(libraryDatabase);
+//    }
     
     /**
      * This will return a list of TitleGenre objects by the titleID.<p>
@@ -47,7 +51,7 @@ public class TitleGenreDAO extends DAO implements TitleGenreDAOInterface {
 
             while (rs.next()) {
                 titleGenre.setGenre(genreDAO.getGenreByID(rs.getInt("genreID")));
-                titleGenre.setTitle(titleDAO.getTitleByID(rs.getInt("titleID")));
+                titleGenre.setTitle(titleDAO.searchByID(rs.getInt("titleID")));
                 
             }
 

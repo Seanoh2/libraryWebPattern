@@ -19,6 +19,10 @@ import java.util.ArrayList;
  */
 public class GenreDAO extends DAO implements GenreDAOInterface {
 
+//    public GenreDAO(String libraryDatabase) {
+//        super(libraryDatabase);
+//    }
+
     /**
      * This will return a Genre object by their ID.<p>
      * Single Genre object.

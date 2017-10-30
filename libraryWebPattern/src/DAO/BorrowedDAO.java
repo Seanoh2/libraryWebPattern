@@ -21,6 +21,10 @@ import java.util.ArrayList;
  */
 public class BorrowedDAO extends DAO implements BorrowedDAOInterface {
 
+//    public BorrowedDAO(String libraryDatabase) {
+//        super(libraryDatabase);
+//    }
+
     
     /**
      * This will return a borrowed ArrayList by their userID.<p>
@@ -50,8 +54,9 @@ public class BorrowedDAO extends DAO implements BorrowedDAOInterface {
             while (rs.next()) {
                 borrowed = new Borrowed();
                 // Get the pieces of a customer from the resultset
+                borrowed.setBorrowedID(rs.getInt("BorrowedID"));
                 borrowed.setUser(userdao.findUserByID(rs.getInt("userID")));
-                borrowed.setTitle(titledao.getTitleByID(rs.getInt("titleID")));
+                borrowed.setTitle(titledao.searchByID(rs.getInt("titleID")));
                 borrowed.setDaysBorrowed(rs.getInt("daysBorrowed"));
                 borrowed.setStatus(rs.getInt("status"));
                 borrowedList.add(borrowed);
@@ -109,8 +114,9 @@ public class BorrowedDAO extends DAO implements BorrowedDAOInterface {
             while (rs.next()) {
                 borrowed = new Borrowed();
                 // Get the pieces of a customer from the resultset
+                borrowed.setBorrowedID(rs.getInt("BorrowedID"));
                 borrowed.setUser(userdao.findUserByID(rs.getInt("userID")));
-                borrowed.setTitle(titledao.getTitleByID(rs.getInt("titleID")));
+                borrowed.setTitle(titledao.searchByID(rs.getInt("titleID")));
                 borrowed.setDaysBorrowed(rs.getInt("daysBorrowed"));
                 borrowed.setStatus(rs.getInt("status"));
                 borrowedList.add(borrowed);
@@ -169,8 +175,9 @@ public class BorrowedDAO extends DAO implements BorrowedDAOInterface {
             while (rs.next()) {
                 borrowed = new Borrowed();
                 // Get the pieces of a customer from the resultset
+                borrowed.setBorrowedID(rs.getInt("BorrowedID"));
                 borrowed.setUser(userdao.findUserByID(rs.getInt("userID")));
-                borrowed.setTitle(titledao.getTitleByID(rs.getInt("titleID")));
+                borrowed.setTitle(titledao.searchByID(rs.getInt("titleID")));
                 borrowed.setDaysBorrowed(rs.getInt("daysBorrowed"));
                 borrowed.setStatus(rs.getInt("status"));
                 borrowedList.add(borrowed);
@@ -198,16 +205,152 @@ public class BorrowedDAO extends DAO implements BorrowedDAOInterface {
 
         return borrowedList;    
     }
+    
+    @Override
+    public ArrayList<Borrowed> getStatusByUserID(int userID) {
+        Connection con = null;
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        Borrowed borrowed = null;
+        UserDAO userdao = new UserDAO();
+        TitleDAO titledao = new TitleDAO();
+        ArrayList<Borrowed> borrowedList = new ArrayList();
+
+        try {
+            con = getConnection();
+            String query = "SELECT * FROM borrowed WHERE userID = ? AND status = 0";
+            ps = con.prepareStatement(query);
+
+            ps.setInt(1, userID);
+            rs = ps.executeQuery();
+
+            while (rs.next()) {
+                borrowed = new Borrowed();
+                // Get the pieces of a customer from the resultset
+                borrowed.setBorrowedID(rs.getInt("BorrowedID"));
+                borrowed.setUser(userdao.findUserByID(rs.getInt("userID")));
+                borrowed.setTitle(titledao.searchByID(rs.getInt("titleID")));
+                borrowed.setDaysBorrowed(rs.getInt("daysBorrowed"));
+                borrowed.setStatus(rs.getInt("status"));
+                borrowedList.add(borrowed);
+
+            }
+
+        } catch (SQLException e) {
+            System.out.println("Exception occured in the getStatusByUserID() method");
+            e.printStackTrace();
+        } finally {
+            try {
+                if (rs != null) {
+                    rs.close();
+                }
+                if (ps != null) {
+                    ps.close();
+                }
+                if (con != null) {
+                    closeConnection(con);
+                }
+            } catch (SQLException e) {
+                System.out.println("Exception occured in the finally section in the getStatusByUserID() method");
+            }
+        }
+
+        return borrowedList;    
+    }
+    
+    @Override
+    public boolean updateStatus(int borrowedID, int newStatus) {
+        Connection con = null;
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        Borrowed borrowed = null;
+
+        try {
+            con = getConnection();
+            String query = "UPDATE borrowed SET status = ? WHERE borrowedID = ?";
+            ps = con.prepareStatement(query);
+            ps.setInt(1, newStatus);
+            ps.setInt(2, borrowedID);
+            int i = ps.executeUpdate();
+            if (i > 0) {
+                System.out.println("Status has been updated successfully");
+                return true;
+            }
+        } catch (SQLException e) {
+            System.out.println("Exception occured in the updateStatus() method: " + e.getMessage());
+        } finally {
+            try {
+                if (ps != null) {
+                    ps.close();
+                }
+                if (con != null) {
+                    closeConnection(con);
+                }
+            } catch (SQLException e) {
+                System.out.println("Exception occured in the finally section of the updateStatus() method");
+                e.getMessage();
+            }
+        }
+
+        return false;  
+    }
+    @Override
+    public Borrowed getBorrowedByID(int borrowedID) {
+        Connection con = null;
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        Borrowed borrowed = null;
+        UserDAO userdao = new UserDAO();
+        TitleDAO titledao = new TitleDAO();
+
+        try {
+            con = getConnection();
+            String query = "SELECT * FROM borrowed WHERE borrowedID = ?";
+            ps = con.prepareStatement(query);
+
+            ps.setInt(1, borrowedID);
+            rs = ps.executeQuery();
+
+            while (rs.next()) {
+                borrowed = new Borrowed();
+                // Get the pieces of a customer from the resultset
+                borrowed.setBorrowedID(rs.getInt("BorrowedID"));
+                borrowed.setUser(userdao.findUserByID(rs.getInt("userID")));
+                borrowed.setTitle(titledao.searchByID(rs.getInt("titleID")));
+                borrowed.setDaysBorrowed(rs.getInt("daysBorrowed"));
+                borrowed.setStatus(rs.getInt("status"));
+            }
+
+        } catch (SQLException e) {
+            System.out.println("Exception occured in the getBorrowedByID() method");
+            e.printStackTrace();
+        } finally {
+            try {
+                if (rs != null) {
+                    rs.close();
+                }
+                if (ps != null) {
+                    ps.close();
+                }
+                if (con != null) {
+                    closeConnection(con);
+                }
+            } catch (SQLException e) {
+                System.out.println("Exception occured in the finally section in the getBorrowedByID() method");
+            }
+        }
+
+        return borrowed;  
+    }
     /**
      * This will add a borrowed object into the database.<p>
      * Admin user is imported to check if they are a admin before adding borrowed object.<p>
      * Method rejected if User object isn't admin.
      * @param borrowed This will be used to add a new borrowed to database.
-     * @param Admin This will be used to ensure user is an admin.
      * @return boolean response if it was successful or an issue happened.
      */
     @Override
-    public boolean addBorrowed(Borrowed borrowed, User Admin) {
+    public boolean addBorrowed(Borrowed borrowed) {
         Connection con = null;
         PreparedStatement ps = null;
         int rs = 0;
@@ -215,6 +358,7 @@ public class BorrowedDAO extends DAO implements BorrowedDAOInterface {
 
         try {
             con = getConnection();
+            //Adding new borrowed entry
             String query = "INSERT INTO borrowed VALUES(NULL,?,?,?,?)";
             ps = con.prepareStatement(query);
             int userID = borrowed.getUser().getUserID();
@@ -229,7 +373,7 @@ public class BorrowedDAO extends DAO implements BorrowedDAOInterface {
             
             // Execute the query
             rs = ps.executeUpdate();
-
+            
         } catch (MySQLIntegrityConstraintViolationException e) {
             System.out.println("Constraint Exception occurred: " + e.getMessage());
             // Set the rowsAffected to -1, this can be used as a flag for the display section

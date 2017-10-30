@@ -9,7 +9,7 @@ import java.util.Objects;
 
 /**
  *
- * @author Sean
+ * @author Ayesha
  */
 public class Title {
 
