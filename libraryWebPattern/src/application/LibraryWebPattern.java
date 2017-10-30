@@ -100,48 +100,45 @@ public class LibraryWebPattern {
                     }
 
                     break;
-                            
 
                 case 3:
                     allTitles = titleDAO.getAllTitles();
                     for (Title title : allTitles) {
                         System.out.print("Title Name: ");
                         System.out.println(title.getNovelName());
-                        
+
                         System.out.print("Title Author: ");
                         System.out.println(title.getAuthor());
-                        
-                        
+
                         System.out.print("Title Description: ");
                         System.out.println(title.getTitleDescription());
-                        
+
                         System.out.println("");
                     }
                     break;
-                    
+
                 case 4:
                     allTitles = titleDAO.getAllTitles();
                     int titleChoice;
                     Title titleDisplay;
-                    
+
                     System.out.println("Please enter ID of title you would like to view.");
-                    for(Title title : allTitles) {
+                    for (Title title : allTitles) {
                         System.out.print("Title ID: ");
                         System.out.println(title.getTitleID());
-                        
-                        System.out.println("Title Name: "+title.getNovelName());
+
+                        System.out.println("Title Name: " + title.getNovelName());
                     }
-                    
+
                     titleChoice = input.nextInt();
                     titleDisplay = titleDAO.getTitleByID(titleChoice);
-                    
+
                     System.out.println("Title Name: " + titleDisplay.getNovelName());
                     System.out.println("Title Author: " + titleDisplay.getAuthor());
                     System.out.println("Title Description: " + titleDisplay.getTitleDescription());
                     System.out.println("Stock: " + titleDisplay.getStock());
                     break;
-                case 9:
-                {
+                case 9: {
                     //Add Title
                     //public Title(String novelName, String author, int stock, int onLoan, String titleDescription)
                     String name = null;     //Name of novel
@@ -149,9 +146,8 @@ public class LibraryWebPattern {
                     int stock = 0;          //Stock count
                     int onLoan = 0;         //number of stock on loan
                     String desc = null;     //Description of Title
-                    
-                    
-                    while(true) {
+
+                    while (true) {
                         System.out.println("Title Name:");
                         name = input.nextLine();
                         System.out.println("Title Author:");
@@ -168,36 +164,33 @@ public class LibraryWebPattern {
                             e.printStackTrace();
                         }
                         onLoan = 0; //default to 0 because a loan cant be taken out on new stock 
-                        
-                        
+
                         // Input Error Checking
-                        if(name != null && !name.equals("")) {
-                            if(author != null && !author.equals("")) {
-                                if(desc != null && !desc.equals("")) {
+                        if (name != null && !name.equals("")) {
+                            if (author != null && !author.equals("")) {
+                                if (desc != null && !desc.equals("")) {
                                     //Confirm with User that details are correct
                                     boolean res = false;
-                                    while(!res) {
+                                    while (!res) {
                                         System.out.println("Are these details correct?[Y/N]");
                                         String confirm = input.nextLine();
                                         //if yes, break out of confirmation and add title
-                                        if(confirm.equals("y") || confirm.equals("Y")) {
+                                        if (confirm.equals("y") || confirm.equals("Y")) {
                                             res = true;
-                                        }
-                                        // if no, break out and reenter details
-                                        else if(confirm.equals("N") || confirm.equals("n")) {
+                                        } // if no, break out and reenter details
+                                        else if (confirm.equals("N") || confirm.equals("n")) {
                                             System.out.println("Please enter details again..");
                                             break;
-                                        }
-                                        //if invalid confirmation, loop back and ask for confirmation again
+                                        } //if invalid confirmation, loop back and ask for confirmation again
                                         else {
                                             System.out.println("Invalid Answer");
                                         }
                                     }
                                     //only true if "confirm" == "Y", break out to add title
-                                    if(res){
+                                    if (res) {
                                         break;
                                     }
-                                } 
+                                }
                             }
                         }//End of error checking
                         // invalid input
@@ -209,8 +202,7 @@ public class LibraryWebPattern {
                     titleDAO.addTitle(newTitle);
                     break;
                 }
-                case 10:
-                {
+                case 10: {
                     //Title Detail Modify
                     //Fetch all titles, choose title to update
                     allTitles = titleDAO.getAllTitles();
@@ -222,116 +214,111 @@ public class LibraryWebPattern {
                     int stock = 0; //stock
                     int onLoan = 0; //onLoan
                     String desc = null; //titleDescription
-                    for(Title t : allTitles) {
+                    for (Title t : allTitles) {
                         System.out.println("-------------------------------------------------");
                         System.out.print("Title ID: " + t.getTitleID());
-                        System.out.println("Title Name: "+t.getNovelName());
+                        System.out.println("Title Name: " + t.getNovelName());
                         //add ids for error checking
                         tidList.add(t.getTitleID());
                     }
                     //error checking zone
-                    while(true){
-                        try{
+                    while (true) {
+                        try {
                             System.out.println("Please enter ID of title you would like to modify.");
                             tid = Integer.parseInt(input.nextLine());
                             boolean success = false;
-                            for(int i=0;i<tidList.size();i++){
-                                if(tid == (int)tidList.get(i)) {
+                            for (int i = 0; i < tidList.size(); i++) {
+                                if (tid == (int) tidList.get(i)) {
                                     //Success!
                                     success = true;
                                     break;
                                 }
                             }
                             //allow user to modify or keep same values
-                            if(success){
+                            if (success) {
                                 //fetch the title
                                 title = titleDAO.getTitleByID(tid);
                                 System.out.println("Please Modify the values of the selected title\nOld Values will be put in brackets");
                                 System.out.println("Enter new value or \"none\" if there is no change required");
-                                System.out.println("Title Name("+title.getNovelName()+"):");
+                                System.out.println("Title Name(" + title.getNovelName() + "):");
                                 name = input.nextLine();
-                                if(name.equals("none")){
+                                if (name.equals("none")) {
                                     name = title.getNovelName();
                                 }
-                                System.out.println("Title Author("+title.getAuthor()+"):");
+                                System.out.println("Title Author(" + title.getAuthor() + "):");
                                 author = input.nextLine();
                                 if (author.equals("none")) {
                                     author = title.getAuthor();
                                 }
-                                System.out.println("Title Description("+title.getTitleDescription()+"):");
+                                System.out.println("Title Description(" + title.getTitleDescription() + "):");
                                 desc = input.nextLine();
-                                if(desc.equals("none")) {
+                                if (desc.equals("none")) {
                                     desc = title.getTitleDescription();
                                 }
-                                System.out.println("Title Stock("+title.getStock()+"):");
+                                System.out.println("Title Stock(" + title.getStock() + "):");
                                 //Necessary for capturing integer input, nextInt() causes the scanner to skip the next input, nextLine() does not
                                 try {
                                     // casting string as integer
                                     String temp = input.nextLine();
-                                    if(!temp.equals("none")){
+                                    if (!temp.equals("none")) {
                                         stock = Integer.parseInt(temp);
-                                    }
-                                    else {
+                                    } else {
                                         stock = title.getStock();
                                     }
-                                    
+
                                 } catch (NumberFormatException e) {
                                     //capturing exception if not a number
                                     e.printStackTrace();
                                 }
-                                System.out.println("Titles on loan("+title.getOnLoan()+"):");
+                                System.out.println("Titles on loan(" + title.getOnLoan() + "):");
                                 try {
                                     // casting string as integer
                                     String temp = input.nextLine();
-                                    if(!temp.equals("none")){
+                                    if (!temp.equals("none")) {
                                         onLoan = Integer.parseInt(temp);
-                                    }
-                                    else {
+                                    } else {
                                         onLoan = title.getOnLoan();
                                     }
-                                    
+
                                 } catch (NumberFormatException e) {
                                     //capturing exception if not a number
                                     e.printStackTrace();
                                 }
 
-
                                 // Input Error Checking
-                                if(name != null && !name.equals("")) {
-                                    if(author != null && !author.equals("")) {
-                                        if(desc != null && !desc.equals("")) {
+                                if (name != null && !name.equals("")) {
+                                    if (author != null && !author.equals("")) {
+                                        if (desc != null && !desc.equals("")) {
                                             //Confirm with User that details are correct
                                             boolean res = false;
-                                            while(!res) {
+                                            while (!res) {
                                                 System.out.println("Are these details correct?[Y/N]");
                                                 String confirm = input.nextLine();
                                                 //if yes, break out of confirmation and add title
-                                                if(confirm.equals("y") || confirm.equals("Y")) {
+                                                if (confirm.equals("y") || confirm.equals("Y")) {
                                                     res = true;
-                                                }
-                                                // if no, break out and reenter details
-                                                else if(confirm.equals("N") || confirm.equals("n")) {
+                                                } // if no, break out and reenter details
+                                                else if (confirm.equals("N") || confirm.equals("n")) {
                                                     System.out.println("Please enter details again..");
                                                     break;
-                                                }
-                                                //if invalid confirmation, loop back and ask for confirmation again
+                                                } //if invalid confirmation, loop back and ask for confirmation again
                                                 else {
                                                     System.out.println("Invalid Answer");
                                                 }
                                             }
                                             //only true if "confirm" == "Y", break out to add title
-                                            if(res){
+                                            if (res) {
                                                 break;
                                             }
-                                        } 
+                                        }
                                     }
                                 }//End of error checking
                                 // invalid input
                                 System.out.println("Invalid Details! Please enter details again..");
                             }//End of User Input
                         } catch (NumberFormatException e) {
-                                //capturing exception if not a number
-                                e.printStackTrace();
+                            //capturing exception if not a number
+                            e.printStackTrace();
                         }
                     }
                     //send new values to db
@@ -344,6 +331,45 @@ public class LibraryWebPattern {
                     break;
                 case 12:
                     //Title Remove
+                    int id = -1; //id of novel
+
+                    while (true) {
+                        System.out.println("Title ID:");
+                        //Necessary for capturing integer input, nextInt() causes the scanner to skip the next input, nextLine() does not
+                        try {
+                            // casting string as integer
+                            id = Integer.parseInt(input.nextLine());
+                        } catch (NumberFormatException e) {
+                            //capturing exception if not a number
+                            e.printStackTrace();
+                        }
+
+                        //Confirm with Admin that id is correct
+                        boolean res = false;
+                        while (!res) {
+                            System.out.println("Is this the correct ID?[Y/N]");
+                            String confirm = input.nextLine();
+                            //if yes, break out of confirmation and Remove title
+                            if (confirm.equals("y") || confirm.equals("Y")) {
+                                res = true;
+                            } // if no, break out and reenter details
+                            else if (confirm.equals("N") || confirm.equals("n")) {
+                                System.out.println("Please enter details again..");
+                                break;
+                            } //if invalid confirmation, loop back and ask for confirmation again
+                            else {
+                                System.out.println("Invalid Answer");
+                            }
+                        }
+                        //only true if "confirm" == "Y", break out to remove title
+                        if (res) {
+                            break;
+                        }
+
+                        
+                    }//end of user input while loop
+                    
+                    titleDAO.removeTitle(id);
                     break;
                 case 13:
                     //User Remove - NOTE: CANNOT REMOVE ADMIN
@@ -396,5 +422,5 @@ public class LibraryWebPattern {
         }
         sc.nextLine();
         return choice;
-    }   
+    }
 }

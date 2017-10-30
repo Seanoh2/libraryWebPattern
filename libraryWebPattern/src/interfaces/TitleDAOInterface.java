@@ -63,7 +63,8 @@ public interface TitleDAOInterface {
     
     /**
      * This will update an existing title in the database.
-     * @param title used to be added to database.
+     * @param title is the updated data.
+     * @param id used to find title.
      * @return Confirmation if update was successful.
      */
     public boolean updateTitle(int id, Title title);
@@ -74,4 +75,12 @@ public interface TitleDAOInterface {
      * @return ArrayList of all titles in db.
      */
     public ArrayList<Title> getAllTitles();
+    
+    
+    /**
+     * This will Delete an existing title in the database.
+     * @param id used to find title to delete.
+     * @return Confirmation if delete was successful.
+     */
+    public boolean removeTitle(int id);
 }

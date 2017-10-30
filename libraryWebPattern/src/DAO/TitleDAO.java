@@ -354,7 +354,7 @@ public class TitleDAO extends DAO implements TitleDAOInterface {
                     closeConnection(conn);
                 }
             } catch (SQLException e) {
-                System.out.println("Exception occured in the finally section in the addTitle() method");
+                System.out.println("Exception occured in the finally section in the removeTitle() method");
             }
         }
 
