@@ -186,7 +186,6 @@ public class UserDAO extends DAO implements UserDAOInterface {
 
     /**
      * This method will take input from the console and create a user object.
-     * The user must be an admin to use this method.
      *
      * @param u
      * @param user

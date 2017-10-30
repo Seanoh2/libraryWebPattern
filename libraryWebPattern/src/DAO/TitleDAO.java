@@ -324,6 +324,49 @@ public class TitleDAO extends DAO implements TitleDAOInterface {
         return titles;
 
     }
+    
+    public boolean removeTitle(int id){
+        Connection conn = null;
+        PreparedStatement ps = null;
+        int rs = 0;
+        Title temp = null;
+        Boolean result = null;
+        
+        try{
+            conn = getConnection();
+            String query = "delete from titles where titleID = ?";
+            ps = conn.prepareStatement(query);
+            
+            ps.setInt(1, id);
+            
+            rs = ps.executeUpdate();
+        } catch (SQLException se) {
+            System.out.println("SQL Exception occurred: " + se.getMessage());
+            se.printStackTrace();
+        } 
+        
+        finally {
+            try {
+                if (ps != null) {
+                    ps.close();
+                }
+                if (conn != null) {
+                    closeConnection(conn);
+                }
+            } catch (SQLException e) {
+                System.out.println("Exception occured in the finally section in the addTitle() method");
+            }
+        }
+
+        if (rs > 0) {
+            result = true;
+        } else {
+            result = false;
+        }
+        
+        return result;
+
+    }
 
     @Override
     public boolean updateTitle(int id, Title title) {
